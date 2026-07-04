@@ -191,14 +191,31 @@
         </div>
     </div>
 
-    <h2>Quick Actions</h2>
-    <div class="actions">
-        <button class="action-btn">+Add Student</button>
-        <button class="action-btn">+Add Teacher</button>
-        <button class="action-btn">+Add Subject</button>
-        <button class="action-btn">Generate Timetable</button>
-    </div>
+<h2>Quick Actions</h2>
 
+<div class="actions">
+
+    <button class="action-btn"
+        onclick="window.location.href='{{ url_for('students_admin') }}'">
+        ➕ Add Student
+    </button>
+
+    <button class="action-btn"
+        onclick="window.location.href='{{ url_for('teachers_admin') }}'">
+        👨‍🏫 Add Teacher
+    </button>
+
+    <button class="action-btn"
+        onclick="window.location.href='{{ url_for('subjects_admin') }}'">
+        📚 Add Subject
+    </button>
+
+    <button class="action-btn"
+        onclick="window.location.href='{{ url_for('timetable_admin') }}'">
+        📅 Generate Timetable
+    </button>
+
+</div>
     <div class="table-con">
         <h2>Recent Activities</h2>
         <br>

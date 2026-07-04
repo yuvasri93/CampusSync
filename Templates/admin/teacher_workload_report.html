@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Teacher Workload Report</title>
+
+<style>
+
+body{
+font-family:Segoe UI;
+background:#eef2ff;
+padding:30px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 12px rgba(0,0,0,.1);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+th{
+background:#2563eb;
+color:white;
+padding:12px;
+}
+
+td{
+padding:12px;
+text-align:center;
+border-bottom:1px solid #ddd;
+}
+
+.btn{
+background:#2563eb;
+color:white;
+padding:10px 18px;
+text-decoration:none;
+border-radius:8px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Teacher Workload Report</h1>
+
+<a href="/reports_admin" class="btn">
+← Back
+</a>
+
+<div class="card">
+
+<table>
+
+<tr>
+
+<th>Teacher</th>
+
+<th>Subject</th>
+
+<th>Class</th>
+
+</tr>
+
+{% for row in workload %}
+
+<tr>
+
+<td>{{ row.teacher_name }}</td>
+
+<td>{{ row.subject_name }}</td>
+
+<td>{{ row.class_name }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</body>
+
+</html>

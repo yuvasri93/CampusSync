@@ -7,6 +7,7 @@ from openpyxl import Workbook
 from flask import send_file
 import csv
 from flask import Response,flash
+from datetime import date
 
 
 app = Flask(
@@ -2049,36 +2050,10 @@ def delete_attendance(id):
 
     return redirect(url_for("attendance_admin"))
 
-@app.route("/export_attendance")
-def export_attendance():
 
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM attendance")
-
-    attendance = cursor.fetchall()
-
-    cursor.close()
-    connection.close()
-
-    def generate():
-
-        data = csv.writer(open("attendance.csv", "w", newline=""))
-
-        yield "Student Name,Class,Date,Status\n"
-
-        for row in attendance:
-
-            yield f"{row['student_name']},{row['class_name']},{row['attendance_date']},{row['status']}\n"
-
-    return Response(
-        generate(),
-        mimetype="text/csv",
-        headers={
-            "Content-Disposition":"attachment; filename=attendance.csv"
-        }
-    )
+from openpyxl import Workbook
+from flask import send_file
 
 @app.route("/reports_admin")
 def reports_admin():
@@ -2099,11 +2074,14 @@ def reports_admin():
     cursor.execute("SELECT COUNT(*) AS total FROM classes")
     total_classes = cursor.fetchone()["total"]
 
-    # Reports List
+    cursor.execute("SELECT COUNT(*) AS total FROM reports")
+    total_reports = cursor.fetchone()["total"]
+
+    # Generated Reports History
     cursor.execute("""
         SELECT *
         FROM reports
-        ORDER BY generated_date DESC
+        ORDER BY generated_date DESC, id DESC
     """)
     reports = cursor.fetchall()
 
@@ -2116,49 +2094,61 @@ def reports_admin():
         total_students=total_students,
         total_teachers=total_teachers,
         total_subjects=total_subjects,
-        total_classes=total_classes
+        total_classes=total_classes,
+        total_reports=total_reports
     )
 
-@app.route("/add_report", methods=["GET", "POST"])
-def add_report():
+@app.route("/generate_report/<report_type>")
+def generate_report(report_type):
 
-    if request.method == "POST":
+    connection = get_db_connection()
+    cursor = connection.cursor()
 
-        report_name = request.form["report_name"]
-        report_type = request.form["report_type"]
-        generated_date = request.form["generated_date"]
-        generated_by = request.form["generated_by"]
-
-        connection = get_db_connection()
-        cursor = connection.cursor()
-
-        cursor.execute("""
-            INSERT INTO reports
-            (
-                report_name,
-                report_type,
-                generated_date,
-                generated_by
-            )
-            VALUES(%s,%s,%s,%s)
-        """,(
+    cursor.execute("""
+        INSERT INTO reports
+        (
             report_name,
             report_type,
             generated_date,
             generated_by
-        ))
+        )
+        VALUES(%s,%s,%s,%s)
+    """,(
+        report_type + " Report",
+        report_type,
+        date.today(),
+        "Admin"
+    ))
 
-        connection.commit()
+    connection.commit()
 
-        cursor.close()
-        connection.close()
+    cursor.close()
+    connection.close()
 
-        return redirect(url_for("reports_admin"))
+    # Open the corresponding report page
 
-    return render_template("admin/add_report.html")
+    if report_type == "Attendance":
+        return redirect(url_for("attendance_report"))
+
+    elif report_type == "Performance":
+        return redirect(url_for("performance_report"))
+
+    elif report_type == "Student Enrollment":
+        return redirect(url_for("student_enrollment_report"))
+
+    elif report_type == "Subject Enrollment":
+        return redirect(url_for("subject_enrollment_report"))
+
+    elif report_type == "Teacher Workload":
+        return redirect(url_for("teacher_workload_report"))
+
+    elif report_type == "Academic Calendar":
+        return redirect(url_for("academic_calendar_report"))
+
+    return redirect(url_for("reports_admin"))
 
 @app.route("/delete_report/<int:id>")
-def delete_report():
+def delete_report(id):
 
     connection = get_db_connection()
     cursor = connection.cursor()
@@ -2175,9 +2165,6 @@ def delete_report():
 
     return redirect(url_for("reports_admin"))
 
-from openpyxl import Workbook
-from flask import send_file
-
 @app.route("/export_reports")
 def export_reports():
 
@@ -2186,10 +2173,10 @@ def export_reports():
 
     cursor.execute("""
         SELECT
-        report_name,
-        report_type,
-        generated_date,
-        generated_by
+            report_name,
+            report_type,
+            generated_date,
+            generated_by
         FROM reports
         ORDER BY generated_date DESC
     """)
@@ -2228,6 +2215,201 @@ def export_reports():
         filename,
         as_attachment=True
     )
+
+@app.route("/attendance_report")
+def attendance_report():
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            student_name,
+            class_name,
+            attendance_date,
+            status
+        FROM attendance
+        ORDER BY attendance_date DESC
+    """)
+
+    attendance = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return render_template(
+        "admin/attendance_report.html",
+        attendance=attendance
+    )
+
+from openpyxl import Workbook
+from flask import send_file
+
+@app.route("/export_attendance")
+def export_attendance():
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            student_name,
+            class_name,
+            attendance_date,
+            status
+        FROM attendance
+        ORDER BY attendance_date DESC
+    """)
+
+    attendance = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    wb = Workbook()
+
+    ws = wb.active
+    ws.title = "Attendance Report"
+
+    ws.append([
+        "Student Name",
+        "Class",
+        "Attendance Date",
+        "Status"
+    ])
+
+    for row in attendance:
+
+        ws.append([
+            row["student_name"],
+            row["class_name"],
+            str(row["attendance_date"]),
+            row["status"]
+        ])
+
+    filename = "Attendance_Report.xlsx"
+
+    wb.save(filename)
+
+    return send_file(
+        filename,
+        as_attachment=True
+    )
+
+@app.route("/performance_report")
+def performance_report():
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            name,
+            enrollment_id,
+            class_name,
+            status
+        FROM students
+        ORDER BY class_name, name
+    """)
+
+    students = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return render_template(
+        "admin/performance_report.html",
+        students=students
+    )
+
+@app.route("/student_enrollment_report")
+def student_enrollment_report():
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            class_name,
+            department,
+            strength
+        FROM classes
+        ORDER BY department,class_name
+    """)
+
+    classes = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return render_template(
+        "admin/student_enrollment_report.html",
+        classes=classes
+    )
+
+@app.route("/subject_enrollment_report")
+def subject_enrollment_report():
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    cursor.execute("""
+    SELECT
+        s.name AS subject_name,
+        t.name AS teacher_name,
+        c.class_name
+    FROM subject_allocation sa
+    JOIN subjects s ON sa.subject_id = s.id
+    JOIN teachers t ON sa.teacher_id = t.id
+    JOIN classes c ON sa.class_id = c.id
+    ORDER BY c.class_name, s.name
+    """)
+
+    enrollments = cursor.fetchall()
+    subjects = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+    return render_template(
+    "admin/subject_enrollment_report.html",
+    enrollments=enrollments
+)
+
+@app.route("/teacher_workload_report")
+def teacher_workload_report():
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            t.name AS teacher_name,
+            s.name AS subject_name,
+            c.class_name
+        FROM subject_allocation sa
+
+        JOIN teachers t
+        ON sa.teacher_id=t.id
+
+        JOIN subjects s
+        ON sa.subject_id=s.id
+
+        JOIN classes c
+        ON sa.class_id=c.id
+
+        ORDER BY t.name
+    """)
+
+    workload = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return render_template(
+        "admin/teacher_workload_report.html",
+        workload=workload
+    )
+
 
 @app.route("/settings_admin", methods=["GET", "POST"])
 def settings_admin():

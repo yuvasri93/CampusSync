@@ -1,282 +1,494 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reports - CampusSync</title>
-    <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family: 'Lucida Sans',sans-serif;
-        }
-        body{
-            background:#f4f7fc;
-            display:flex;
-            min-height:100vh;
-        }
-        .sidebar{
-            width:250px;
-            height:100%;
-            background: #182951;
-            color:white;
-            position:fixed;
-            padding:20px;
-        }
-        .logo{
-            text-align: center;
-            margin-bottom:30px;
-        }
-        .logo h2{
-            color:#60a5fa;
-        }
-        .sidebar ul{
-            list-style:none;
-        }
-        .sidebar ul li{
-            margin:10px 0;
-        }
-        .sidebar ul li a{
-            color:white;
-            text-decoration: none;
-            display:block;
-            padding:12px;
-            border-radius:10px;
-            transition:.3s;
-        }
-        .sidebar ul li a:hover,
-        .sidebar ul li a.active{
-            background: #2563eb;
-        }
-        .main{
-            margin-left:250px;
-            width:100%;
-            padding:30px;
-        }
-        .topbar{
-            display:flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom:30px;
-        }
-        .admininfo{
-            font-weight: bold;
-            color:#2563eb
-        }
-        .report-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-            gap:20px;
-            margin-bottom:30px;
-        }
-        .report-card{
-            background:White;
-            padding:25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,.1);
-            transition:0.3s;
-            cursor:pointer;
-            border-left:5px solid #2563eb;
-        }
-        .report-card:hover{
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,.15);
-        }
-        .report-card h3{
-            color:#0f172a;
-            margin-bottom:10px;
-            font-size:18px;
-        }
-        .report-card p{
-            color:#64748b;
-            margin-bottom:15px;
-            font-size:14px;
-        }
-        .report-btn{
-            background:#2563eb;
-            color:white;
-            border:none;
-            padding:10px 16px;
-            border-radius:8px;
-            cursor:pointer;
-            font-weight:600;
-            font-size:13px;
-        }
-        .report-btn:hover{
-            background:#1d4ed8;
-        }
-        .table-con{
-            background-color: white;
-            padding:20px;
-            border-radius:15px;
-            box-shadow:0 4px 12px rgba(0,0,0,.1);
-        }
-        table{
-            width:100%;
-            border-collapse: collapse;
-        }
-        table th,table td{
-            padding:12px;
-            text-align: left;
-            border-bottom:1px solid #ddd;
-        }
-        table th{
-            color:#2563eb;
-            font-weight:700;
-        }
-        .date-badge{
-            background:#e0e7ff;
-            color:#2563eb;
-            padding:6px 12px;
-            border-radius:6px;
-            font-size:12px;
-            font-weight:600;
-        }
-        @media(max-width:880px){
-            .topbar{flex-direction:column;gap:10px;}
-        }
-        @media(max-width:680px){
-            body{display:block;}
-            .sidebar{position:relative;width:100%;height:auto;}
-            .main{margin-left:0;}
-        }
-        .controls{
-            display:flex;
-            gap:15px;
-            margin-bottom:25px;
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Reports - CampusSync</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
 }
-    </style>
+
+body{
+    background:#f4f7fc;
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:250px;
+    background:#182951;
+    color:white;
+    position:fixed;
+    height:100%;
+    padding:20px;
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.logo h2{
+    color:#60a5fa;
+}
+
+.logo p{
+    color:#9ca3af;
+    font-size:12px;
+}
+
+.sidebar ul{
+    list-style:none;
+}
+
+.sidebar ul li{
+    margin:10px 0;
+}
+
+.sidebar ul li a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:12px;
+    border-radius:10px;
+    transition:.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active{
+    background:#2563eb;
+}
+
+.main{
+    margin-left:250px;
+    width:100%;
+    padding:30px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.admininfo{
+    font-weight:bold;
+    color:#2563eb;
+}
+
+.controls{
+    display:flex;
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.btn{
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    padding:12px 18px;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.btn:hover{
+    background:#1d4ed8;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 5px 12px rgba(0,0,0,.1);
+}
+
+.card h4{
+    color:#64748b;
+    margin-bottom:10px;
+}
+
+.card h1{
+    color:#2563eb;
+}
+
+.report-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+}
+
+.report-card{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+    border-left:5px solid #2563eb;
+
+}
+
+.report-card h3{
+
+    margin-bottom:10px;
+
+}
+
+.report-card p{
+
+    color:#64748b;
+
+    margin-bottom:20px;
+
+}
+
+.generate{
+
+    display:inline-block;
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:10px 18px;
+
+    text-decoration:none;
+
+    border-radius:8px;
+
+}
+
+.generate:hover{
+
+    background:#1d4ed8;
+
+}
+
+</style>
+
 </head>
+
 <body>
-    <div class="sidebar">
-        <div class="logo">
-            <h2>CampusSync</h2>
-            <p style="color:#9ca3af;font-size:12px;">Admin Panel</p>
-        </div>
-        <ul>
-            <li><a href="/dashboard_admin">🏠 Dashboard</a></li>
-            <li><a href="/students_admin">🎓 Students</a></li>
-            <li><a href="/teachers_admin">👨‍🏫 Teachers</a></li>
-            <li><a href="/subjects_admin">📚 Subjects</a></li>
-            <li><a href="/subject_allocation_admin">🔗 Subject Allocation</a></li>
-            <li><a href="/classes_admin">🏫 Classes</a></li>
-            <li><a href="/timetable_admin">📅 Timetable</a></li>
-            <li><a href="/attendance_admin">✅ Attendance</a></li>
-            <li><a href="#" class="active">📊 Reports</a></li>
-            <li><a href="/settings_admin">⚙ Settings</a></li>
-            <li><a href="/logout">🚪 Logout</a></li>
-        </ul>
-    </div>
-    <div class="main">
-        <div class="topbar">
-            <div>
-                <h1>Reports</h1>
-                <p>Generate and manage campus reports</p>
-            </div>
-            <div class="admininfo">{{ admin.name if admin else 'Admin' }}</div>
-        </div>
 
-        <div class="controls">
+<div class="sidebar">
 
-    <a href="/add_report" class="report-btn" style="text-decoration:none;">
-        ➕ Add Report
-    </a>
+<div class="logo">
 
-    <a href="/export_reports" class="report-btn" style="text-decoration:none;">
-        📥 Export Reports
-    </a>
+<h2>CampusSync</h2>
+
+<p>Admin Panel</p>
 
 </div>
 
-        <div class="report-grid">
-            <div class="report-card">
-                <h3>📊 Attendance Report</h3>
-                <p>View and export attendance data for all classes and students</p>
-                <a href="/add_report" class="report-btn" style="text-decoration:none;">
-Generate
-</a>
-            </div>
-            <div class="report-card">
-                <h3>📈 Performance Report</h3>
-                <p>Analyze student performance and grade distribution</p>
-                <a href="/add_report" class="report-btn" style="text-decoration:none;">
-Generate
-</a>
-            </div>
-            <div class="report-card">
-                <h3>👥 Student Demographics</h3>
-                <p>Get insights on student enrollment and distribution</p>
-                <a href="/add_report" class="report-btn" style="text-decoration:none;">
-Generate
-</a>
-            </div>
-            <div class="report-card">
-                <h3>📚 Subject Enrollment</h3>
-                <p>Track subject-wise student enrollment statistics</p>
-                <a href="/add_report" class="report-btn" style="text-decoration:none;">
-Generate
-</a>
-            </div>
-            <div class="report-card">
-                <h3>👨‍🏫 Teacher Workload</h3>
-                <p>Monitor teaching load and class assignments</p>
-                <a href="/add_report" class="report-btn" style="text-decoration:none;">
-Generate
-</a>
-            </div>
-            <div class="report-card">
-                <h3>📋 Academic Calendar</h3>
-                <p>Export academic schedule and important dates</p>
-               <a href="/add_report" class="report-btn" style="text-decoration:none;">
-Generate
-</a>
-            </div>
-        </div>
+<ul>
 
-        <div class="table-con">
-            <h2>Recently Generated Reports</h2>
-            <table>
-                <tr>
-                    <th>Report Name</th>
-                    <th>Type</th>
-                    <th>Generated Date</th>
-                    <th>Generated By</th>
-                    <th>Action</th>
-                </tr>
-                {% if reports %}
-                {% for report in reports %}
-                <tr>
-                    <td>{{ report.report_name }}</td>
-                    <td>{{ report.report_type }}</td>
-                    <td><span class="date-badge">{{ report.generated_date.strftime('%b %d, %Y') }}</span></td>
-                    <td>{{ report.generated_by }}</td>
-                    <td>
-                    <a href="/delete_report/{{ report.id }}"
-                    onclick="return confirm('Delete this report?')"
-                    style="color:red;text-decoration:none;font-weight:bold;">
-                    Delete
-                    </a>
+<li><a href="/dashboard_admin">🏠 Dashboard</a></li>
 
-</td>
-                </tr>
-                {% endfor %}
+<li><a href="/students_admin">🎓 Students</a></li>
+
+<li><a href="/teachers_admin">👨‍🏫 Teachers</a></li>
+
+<li><a href="/subjects_admin">📚 Subjects</a></li>
+
+<li><a href="/subject_allocation_admin">🔗 Subject Allocation</a></li>
+
+<li><a href="/classes_admin">🏫 Classes</a></li>
+
+<li><a href="/timetable_admin">📅 Timetable</a></li>
+
+<li><a href="/attendance_admin">✅ Attendance</a></li>
+
+<li><a href="/reports_admin" class="active">📊 Reports</a></li>
+
+<li><a href="/settings_admin">⚙ Settings</a></li>
+
+<li><a href="/logout">🚪 Logout</a></li>
+
+</ul>
+
+</div>
+
+<div class="main">
+
+<div class="topbar">
+
+<div>
+
+<h1>Reports Dashboard</h1>
+
+<p>Generate and Manage Campus Reports</p>
+
+</div>
+
+<div class="admininfo">
+
+Admin
+
+</div>
+
+</div>
+
+<!-- Export Reports button removed -->
+
+<div class="cards">
+
+<div class="card">
+
+<h4>Total Students</h4>
+
+<h1>{{ total_students }}</h1>
+
+</div>
+
+<div class="card">
+
+<h4>Total Teachers</h4>
+
+<h1>{{ total_teachers }}</h1>
+
+</div>
+
+<div class="card">
+
+<h4>Total Subjects</h4>
+
+<h1>{{ total_subjects }}</h1>
+
+</div>
+
+<div class="card">
+
+<h4>Total Classes</h4>
+
+<h1>{{ total_classes }}</h1>
+
+</div>
+
+</div>
+
+<div class="report-grid">
+
+<div class="report-card">
+
+<h3>📊 Attendance Report</h3>
+
+<p>Generate attendance report of all students.</p>
+
+<a href="{{ url_for('generate_report', report_type='Attendance') }}"
+class="generate">
+
+Generate
+
+</a>
+
+</div>
+
+<div class="report-card">
+
+<h3>📈 Performance Report</h3>
+
+<p>Generate academic performance report.</p>
+
+<a href="{{ url_for('generate_report', report_type='Performance') }}"
+class="generate">
+
+Generate
+
+</a>
+
+</div>
+
+<div class="report-card">
+
+<h3>👥 Student Enrollment</h3>
+
+<p>Generate student enrollment statistics.</p>
+
+<a href="{{ url_for('generate_report', report_type='Student Enrollment') }}"
+class="generate">
+
+Generate
+
+</a>
+
+</div>
+
+<div class="report-card">
+
+<h3>📚 Subject Enrollment</h3>
+
+<p>Generate subject-wise enrollment report.</p>
+
+<a href="{{ url_for('generate_report', report_type='Subject Enrollment') }}"
+class="generate">
+
+Generate
+
+</a>
+
+</div>
+
+<div class="report-card">
+
+<h3>👨‍🏫 Teacher Workload</h3>
+
+<p>Generate teacher workload report.</p>
+<a href="{{ url_for('generate_report', report_type='Teacher Workload') }}"
+class="generate">
+Generate
+</a>
+</div>
+</div>
+<!-- Recently Generated Reports -->
+
+<div class="table-container" style="margin-top:35px;">
+
+    <h2 style="margin-bottom:20px;color:#1e293b;">
+        Recently Generated Reports
+    </h2>
+
+    <table style="width:100%;border-collapse:collapse;">
+
+        <tr style="background:#2563eb;color:white;">
+
+            <th style="padding:14px;">Report Name</th>
+
+            <th style="padding:14px;">Type</th>
+
+            <th style="padding:14px;">Generated Date</th>
+
+            <th style="padding:14px;">Generated By</th>
+
+            <th style="padding:14px;">Actions</th>
+
+        </tr>
+
+        {% if reports %}
+
+        {% for report in reports %}
+
+        <tr style="border-bottom:1px solid #ddd;">
+
+            <td style="padding:12px;">
+                {{ report.report_name }}
+            </td>
+
+            <td style="padding:12px;">
+                {{ report.report_type }}
+            </td>
+
+            <td style="padding:12px;">
+
+                {% if report.generated_date %}
+
+                    {{ report.generated_date.strftime('%d-%m-%Y') }}
+
                 {% else %}
 
-                <tr>
+                    -
 
-                <td colspan="5" style="text-align:center;">
+                {% endif %}
 
-                No reports available.
+            </td>
 
-                </td>
+            <td style="padding:12px;">
+                {{ report.generated_by }}
+            </td>
 
-                </tr>
+            <td style="padding:12px;">
 
-{% endif %}
+                {% if report.report_type=="Attendance" %}
 
-            </table>
-        </div>
-    </div>
+                <a href="{{ url_for('attendance_report') }}"
+                style="background:#10b981;color:white;padding:8px 14px;border-radius:6px;text-decoration:none;">
+                View
+                </a>
+
+                {% elif report.report_type=="Performance" %}
+
+                <a href="{{ url_for('performance_report') }}"
+                style="background:#10b981;color:white;padding:8px 14px;border-radius:6px;text-decoration:none;">
+                View
+                </a>
+
+                {% elif report.report_type=="Student Enrollment" %}
+
+                <a href="{{ url_for('student_enrollment_report') }}"
+                style="background:#10b981;color:white;padding:8px 14px;border-radius:6px;text-decoration:none;">
+                View
+                </a>
+
+                {% elif report.report_type=="Subject Enrollment" %}
+
+                <a href="{{ url_for('subject_enrollment_report') }}"
+                style="background:#10b981;color:white;padding:8px 14px;border-radius:6px;text-decoration:none;">
+                View
+                </a>
+
+                {% elif report.report_type=="Teacher Workload" %}
+
+                <a href="{{ url_for('teacher_workload_report') }}"
+                style="background:#10b981;color:white;padding:8px 14px;border-radius:6px;text-decoration:none;">
+                View
+                </a>
+
+                {% endif %}
+
+                &nbsp;
+
+                <a href="{{ url_for('delete_report',id=report.id) }}"
+                onclick="return confirm('Delete this report?')"
+                style="background:#ef4444;color:white;padding:8px 14px;border-radius:6px;text-decoration:none;">
+                Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        {% else %}
+
+        <tr>
+
+            <td colspan="5"
+            style="padding:20px;text-align:center;">
+
+                No reports generated yet.
+
+            </td>
+
+        </tr>
+
+        {% endif %}
+
+    </table>
+
+</div>
+
+</div>
+
 </body>
+
 </html>

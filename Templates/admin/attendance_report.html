@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Attendance Report</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:#eef2ff;
+padding:30px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.header h1{
+color:#2563eb;
+}
+
+.btn{
+background:#2563eb;
+color:white;
+padding:12px 18px;
+text-decoration:none;
+border-radius:8px;
+font-weight:bold;
+}
+
+.btn:hover{
+background:#1d4ed8;
+}
+
+.card{
+
+background:white;
+
+padding:25px;
+
+border-radius:15px;
+
+box-shadow:0 5px 12px rgba(0,0,0,.1);
+
+}
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+margin-top:20px;
+
+}
+
+th{
+
+background:#2563eb;
+
+color:white;
+
+padding:12px;
+
+}
+
+td{
+
+padding:12px;
+
+border-bottom:1px solid #ddd;
+
+text-align:center;
+
+}
+
+.present{
+
+color:green;
+
+font-weight:bold;
+
+}
+
+.absent{
+
+color:red;
+
+font-weight:bold;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h1>Attendance Report</h1>
+
+<div>
+
+<a href="/reports_admin" class="btn">
+
+← Back
+
+</a>
+
+<a href="/export_attendance" class="btn">
+
+Export Excel
+
+</a>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+
+Attendance Details
+
+</h2>
+
+<table>
+
+<tr>
+
+<th>Student</th>
+
+<th>Class</th>
+
+<th>Date</th>
+
+<th>Status</th>
+
+</tr>
+
+{% for row in attendance %}
+
+<tr>
+
+<td>{{ row.student_name }}</td>
+
+<td>{{ row.class_name }}</td>
+
+<td>{{ row.attendance_date }}</td>
+
+<td>
+
+{% if row.status=="Present" %}
+
+<span class="present">
+
+Present
+
+</span>
+
+{% else %}
+
+<span class="absent">
+
+Absent
+
+</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+</table>
+
+</div>
+
+</body>
+
+</html>
