@@ -141,20 +141,6 @@ http://127.0.0.1:5000/
 
 ---
 
-## 💻 Screenshots
-
-You can add screenshots of:
-
-- Home Page
-- Student Dashboard
-- Teacher Dashboard
-- Admin Dashboard
-- Attendance Module
-- Reports Page
-- Announcement Page
-
----
-
 ## 🎯 Project Objectives
 
 - Digitize campus administration.
