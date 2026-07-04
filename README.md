@@ -4,9 +4,9 @@ Campus Sync is a web-based Timetable Scheduler and Classroom management system d
 
 ---
 
-## 📌 Features
+##  Features
 
-### 👨‍🎓 Student Module
+### Student Module
 - Secure Student Login
 - View Dashboard
 - Access Announcements
@@ -15,7 +15,7 @@ Campus Sync is a web-based Timetable Scheduler and Classroom management system d
 - Submit Reports/Requests
 - Profile Management
 
-### 👨‍🏫 Teacher Module
+### Teacher Module
 - Secure Teacher Login
 - Manage Student Attendance
 - Post Announcements
@@ -23,7 +23,7 @@ Campus Sync is a web-based Timetable Scheduler and Classroom management system d
 - Generate Reports
 - Profile Management
 
-### 👨‍💼 Admin Module
+### Admin Module
 - Secure Admin Login
 - Manage Students
 - Manage Teachers
@@ -34,7 +34,7 @@ Campus Sync is a web-based Timetable Scheduler and Classroom management system d
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 ### Frontend
 - HTML5
@@ -152,7 +152,7 @@ http://127.0.0.1:5000/
 
 ---
 
-## 🔐 User Roles
+## User Roles
 
 | Role | Access |
 |------|--------|
@@ -178,7 +178,7 @@ http://127.0.0.1:5000/
 
 ## 📜 License
 
-This project is developed for educational and academic purposes.
+This project is developed for educational and academic purposes only.
 
 ---
 
