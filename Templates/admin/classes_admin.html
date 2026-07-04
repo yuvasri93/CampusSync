@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classes - CampusSync</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#eef2ff;
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:260px;
+    background:#1f2937;
+    color:white;
+    position:fixed;
+    height:100%;
+    padding:25px;
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.logo h2{
+    color:#60a5fa;
+}
+
+.logo p{
+    color:#9ca3af;
+}
+
+.sidebar ul{
+    list-style:none;
+}
+
+.sidebar ul li{
+    margin:14px 0;
+}
+
+.sidebar ul li a{
+    display:block;
+    padding:12px;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+    transition:.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active{
+    background:#2563eb;
+}
+
+.main{
+    margin-left:260px;
+    width:100%;
+    padding:30px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.admin-chip{
+    background:white;
+    padding:12px 20px;
+    border-radius:30px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    font-weight:600;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.card{
+    background:white;
+    padding:22px;
+    border-radius:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.card h3{
+    color:#64748b;
+    font-size:14px;
+}
+
+.card h1{
+    color:#2563eb;
+    margin-top:10px;
+}
+
+.form-card{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    margin-bottom:25px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.form-card h2{
+    margin-bottom:20px;
+    color:#1e293b;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.form-grid input,
+.form-grid select{
+    padding:12px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+}
+
+.btn{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+.btn:hover{
+    background:#1d4ed8;
+}
+
+.cancel-btn{
+    background:#64748b;
+    color:white;
+    padding:12px 20px;
+    text-decoration:none;
+    border-radius:8px;
+    margin-left:10px;
+}
+
+.table-container{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:14px;
+    border-bottom:1px solid #e5e7eb;
+    text-align:left;
+}
+
+th{
+    color:#2563eb;
+}
+
+.edit{
+    background:#3b82f6;
+    color:white;
+    padding:7px 14px;
+    border-radius:6px;
+    text-decoration:none;
+}
+
+.delete{
+    background:#ef4444;
+    color:white;
+    padding:7px 14px;
+    border-radius:6px;
+    text-decoration:none;
+}
+
+.flash{
+    background:#dcfce7;
+    color:#166534;
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+<h2>CampusSync</h2>
+<p>Admin Panel</p>
+</div>
+
+<ul>
+<li><a href="/dashboard_admin">🏠 Dashboard</a></li>
+<li><a href="/students_admin">🎓 Students</a></li>
+<li><a href="/teachers_admin">👨‍🏫 Teachers</a></li>
+<li><a href="/subjects_admin">📚 Subjects</a></li>
+<li><a href="/subject_allocation_admin">🔗 Subject Allocation</a></li>
+<li><a href="/classes_admin" class="active">🏫 Classes</a></li>
+<li><a href="/timetable_admin">📅 Timetable</a></li>
+<li><a href="/attendance_admin">✅ Attendance</a></li>
+<li><a href="/reports_admin">📊 Reports</a></li>
+<li><a href="/settings_admin">⚙ Settings</a></li>
+<li><a href="/logout">🚪 Logout</a></li>
+</ul>
+
+</div>
+
+<div class="main">
+
+<div class="topbar">
+
+<div>
+<h1>Class Management</h1>
+<p>Create and manage classes</p>
+</div>
+
+<div class="admin-chip">
+👤 {{ session.name }}
+</div>
+
+</div>
+
+{% with messages=get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<div class="flash">
+{{ message }}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="stats">
+
+<div class="card">
+<h3>Total Classes</h3>
+<h1>{{ classes|length }}</h1>
+</div>
+
+<div class="card">
+<h3>Active Classes</h3>
+<h1>{{ classes|selectattr('status','equalto','Active')|list|length }}</h1>
+</div>
+
+<div class="card">
+<h3>Total Students</h3>
+<h1>{{ total_students }}</h1>
+</div>
+
+</div>
+<div style="margin-bottom:20px;">
+
+<a href="{{ url_for('add_class') }}" class="btn">
+➕ Add New Class
+</a>
+
+</div>
+<div class="table-container">
+
+    <h2 style="margin-bottom:20px;color:#1e293b;">
+        All Classes
+    </h2>
+
+    <table>
+
+        <tr>
+            <th>ID</th>
+            <th>Class</th>
+            <th>Department</th>
+            <th>Year</th>
+            <th>Semester</th>
+            <th>Section</th>
+            <th>Strength</th>
+            <th>Class Teacher</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for cls in classes %}
+
+        <tr>
+
+            <td>{{ cls.id }}</td>
+
+            <td>{{ cls.class_name }}</td>
+
+            <td>{{ cls.department }}</td>
+
+            <td>{{ cls.year }}</td>
+
+            <td>{{ cls.semester }}</td>
+
+            <td>{{ cls.section }}</td>
+
+            <td>{{ cls.strength }}</td>
+
+            <td>{{ cls.class_teacher }}</td>
+
+            <td>
+
+                {% if cls.status=="Active" %}
+
+                    <span style="color:green;font-weight:bold;">
+                        Active
+                    </span>
+
+                {% else %}
+
+                    <span style="color:red;font-weight:bold;">
+                        Inactive
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                <a
+                href="{{ url_for('edit_class', id=cls.id) }}"
+                class="edit">
+                Edit
+                </a>
+
+                <a
+                href="{{ url_for('delete_class',id=cls.id) }}"
+                class="delete"
+                onclick="return confirm('Delete this class?');">
+                Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

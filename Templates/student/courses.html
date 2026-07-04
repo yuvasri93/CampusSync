@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Courses - CampusSync</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        body{
+            background:#eef2ff;
+            display:flex;
+            min-height:100vh;
+        }
+        .sidebar{
+            width:260px;
+            background:#1f2937;
+            color:#e5e7eb;
+            position:fixed;
+            height:100%;
+            padding:28px 20px;
+        }
+        .logo{
+            text-align:center;
+            margin-bottom:30px;
+        }
+        .logo h2{
+            color:#60a5fa;
+            font-size:24px;
+            letter-spacing:1px;
+        }
+        .logo p{
+            color:#9ca3af;
+            margin-top:6px;
+        }
+        .sidebar ul{
+            list-style:none;
+            margin-top:20px;
+        }
+        .sidebar ul li{
+            margin:14px 0;
+        }
+        .sidebar ul li a{
+            color:#e5e7eb;
+            text-decoration:none;
+            display:block;
+            padding:12px 16px;
+            border-radius:12px;
+            transition:.3s;
+        }
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active{
+            background:#2563eb;
+        }
+        .main{
+            margin-left:260px;
+            flex:1;
+            padding:32px;
+        }
+        .topbar{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:30px;
+        }
+        .topbar h1{
+            font-size:32px;
+            color:#0f172a;
+        }
+        .topbar p{
+            color:#475569;
+            margin-top:8px;
+        }
+        .profile-chip{
+            display:inline-flex;
+            align-items:center;
+            gap:10px;
+            background:#fff;
+            padding:12px 18px;
+            border-radius:999px;
+            box-shadow:0 15px 35px rgba(15,23,42,.08);
+            color:#0f172a;
+        }
+        .course-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+            gap:24px;
+            margin-bottom:32px;
+        }
+        .course-card{
+            background:#ffffff;
+            padding:24px;
+            border-radius:20px;
+            box-shadow:0 18px 40px rgba(15,23,42,.08);
+            transition:0.3s;
+            border-top:5px solid #2563eb;
+        }
+        .course-card:hover{
+            transform:translateY(-5px);
+        }
+        .course-header{
+            margin-bottom:16px;
+        }
+        .course-name{
+            font-size:20px;
+            color:#0f172a;
+            font-weight:700;
+            margin-bottom:4px;
+        }
+        .course-code{
+            color:#64748b;
+            font-size:13px;
+        }
+        .course-info{
+            margin-bottom:18px;
+        }
+        .info-row{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            color:#475569;
+            margin-bottom:8px;
+            font-size:14px;
+        }
+        .course-stats{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:12px;
+            padding:16px 0;
+            border-top:1px solid #e5e7eb;
+            border-bottom:1px solid #e5e7eb;
+            margin:16px 0;
+        }
+        .stat{
+            text-align:center;
+        }
+        .stat-value{
+            color:#2563eb;
+            font-size:18px;
+            font-weight:700;
+        }
+        .stat-label{
+            color:#94a3b8;
+            font-size:12px;
+        }
+        .progress-bar{
+            background:#f0f9ff;
+            height:6px;
+            border-radius:3px;
+            overflow:hidden;
+            margin-top:8px;
+        }
+        .progress-fill{
+            background:#10b981;
+            height:100%;
+            border-radius:3px;
+        }
+        .course-btn{
+            width:100%;
+            background:#2563eb;
+            color:white;
+            border:none;
+            padding:12px 16px;
+            border-radius:10px;
+            cursor:pointer;
+            font-weight:600;
+            margin-top:16px;
+        }
+        .course-btn:hover{
+            background:#1d4ed8;
+        }
+        @media(max-width:880px){
+            .topbar{flex-direction:column;align-items:flex-start;gap:18px;}
+        }
+        @media(max-width:680px){
+            body{display:block;}
+            .sidebar{position:relative;width:100%;height:auto;}
+            .main{margin-left:0;padding:24px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <h2>CampusSync</h2>
+            <p>Student Portal</p>
+        </div>
+        <ul>
+            <li><a href="/dashboard_student">🏠 Dashboard</a></li>
+            <li><a href="/courses_student" class="active">📚 Courses</a></li>
+            <li><a href="/assignments_student">📝 Assignments</a></li>
+            <li><a href="/grades_student">📊 Grades</a></li>
+            <li><a href="/timetable_student">📆 Timetable</a></li>
+            <li><a href="/notices_student">📢 Notices</a></li>
+            <li><a href="/settings_student">⚙ Settings</a></li>
+            <li><a href="/logout">🚪 Logout</a></li>
+        </ul>
+    </div>
+    <div class="main">
+            <div class="topbar">
+            <div>
+                <h1>My Courses</h1>
+                <p>View all your enrolled courses</p>
+            </div>
+            <div class="profile-chip">👩‍🎓 {{ student.name }}</div>
+        </div>
+
+        <div class="course-grid">
+            {% for subject in subjects %}
+            <div class="course-card">
+                <div class="course-header">
+                    <div class="course-name">{{ subject.name }}</div>
+                    <div class="course-code">{{ subject.code }}</div>
+                </div>
+                <div class="course-info">
+                    <div class="info-row">Instructor: {{ subject.instructor }}</div>
+                    <div class="info-row">Credits: {{ subject.credits }}</div>
+                    <div class="info-row">Students: {{ subject.students_enrolled }}</div>
+                </div>
+                <div class="course-stats">
+                    <div class="stat">
+                        <div class="stat-value">{{ subject.credits }}</div>
+                        <div class="stat-label">Credits</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">{{ subject.status }}</div>
+                        <div class="stat-label">Status</div>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:75%"></div>
+                </div>
+                <button class="course-btn">View Course</button>
+            </div>
+            {% endfor %}
+            {% if not subjects %}
+
+            <div class="course-card">
+                <h2>No Courses Allocated</h2>
+                <p>Your administrator has not allocated any subjects yet.</p>
+            </div>
+
+{% endif %}
+        </div>
+    </div>
+</body>
+</html>

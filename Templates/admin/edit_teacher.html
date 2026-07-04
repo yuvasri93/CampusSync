@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Edit Teacher</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Lucida Sans',sans-serif;
+}
+
+body{
+background:#f4f7fc;
+display:flex;
+}
+
+.sidebar{
+width:250px;
+background:#182951;
+height:100vh;
+position:fixed;
+padding:20px;
+color:white;
+}
+
+.logo{
+text-align:center;
+margin-bottom:30px;
+}
+
+.logo h2{
+color:#60a5fa;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar ul li{
+margin:10px 0;
+}
+
+.sidebar ul li a{
+display:block;
+padding:12px;
+color:white;
+text-decoration:none;
+border-radius:10px;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active{
+background:#2563eb;
+}
+
+.main{
+margin-left:250px;
+width:100%;
+padding:40px;
+}
+
+.form-card{
+background:white;
+max-width:700px;
+margin:auto;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.form-card h1{
+color:#2563eb;
+margin-bottom:25px;
+}
+
+.form-group{
+margin-bottom:20px;
+}
+
+label{
+display:block;
+margin-bottom:8px;
+font-weight:bold;
+}
+
+input,
+select{
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:8px;
+font-size:15px;
+}
+
+.buttons{
+margin-top:25px;
+}
+
+.btn{
+padding:12px 22px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:15px;
+text-decoration:none;
+}
+
+.update{
+background:#16a34a;
+color:white;
+}
+
+.cancel{
+background:#6b7280;
+color:white;
+margin-left:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+
+<h2>CampusSync</h2>
+
+<p>Admin Panel</p>
+
+</div>
+
+<ul>
+
+<li><a href="/dashboard_admin">🏠 Dashboard</a></li>
+
+<li><a href="/students_admin">🎓 Students</a></li>
+
+<li><a href="/teachers_admin" class="active">👨‍🏫 Teachers</a></li>
+
+<li><a href="/subjects_admin">📚 Subjects</a></li>
+<li><a href="/subject_allocation_admin">🔗 Subject Allocation</a></li>
+<li><a href="/classes_admin">🏫 Classes</a></li>
+<li><a href="/attendance_admin">✅ Attendance</a></li>
+
+<li><a href="/reports_admin">📊 Reports</a></li>
+
+<li><a href="/settings_admin">⚙ Settings</a></li>
+
+</ul>
+
+</div>
+
+<div class="main">
+
+<div class="form-card">
+
+<h1>Edit Teacher</h1>
+
+<form action="/edit_teacher/{{ teacher.id }}" method="POST">
+
+<div class="form-group">
+
+<label>Name</label>
+
+<input
+type="text"
+name="name"
+value="{{ teacher.name }}"
+placeholder="Enter teacher name"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label>Email</label>
+
+<input
+type="email"
+name="email"
+value="{{ teacher.email }}"
+placeholder="Enter teacher email"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label>Department </label>
+
+<input
+type="text"
+name="department"
+value="{{ teacher.department }}"
+placeholder="Enter Department"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label>Designation</label>
+
+<input
+type="text"
+name="designation"
+value="{{ teacher.designation }}"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label>Status</label>
+
+<select name="status">
+
+<option value="Active"
+{% if teacher.status=="Active" %}selected{% endif %}>
+Active
+</option>
+
+<option value="Inactive"
+{% if teacher.status=="Inactive" %}selected{% endif %}>
+Inactive
+</option>
+
+</select>
+
+</div>
+
+<div class="buttons">
+
+<button
+class="btn update"
+type="submit">
+
+Update Teacher
+
+</button>
+
+<a
+href="/teachers_admin"
+class="btn cancel">
+
+Cancel
+
+</a>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Class | CampusSync</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:#eef2ff;
+display:flex;
+min-height:100vh;
+}
+
+.sidebar{
+width:260px;
+background:#1f2937;
+color:white;
+position:fixed;
+height:100%;
+padding:25px;
+}
+
+.logo{
+text-align:center;
+margin-bottom:30px;
+}
+
+.logo h2{
+color:#60a5fa;
+}
+
+.logo p{
+color:#9ca3af;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar ul li{
+margin:14px 0;
+}
+
+.sidebar ul li a{
+display:block;
+padding:12px;
+color:white;
+text-decoration:none;
+border-radius:10px;
+transition:.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active{
+background:#2563eb;
+}
+
+.main{
+margin-left:260px;
+padding:35px;
+width:100%;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.admin-chip{
+background:white;
+padding:12px 20px;
+border-radius:30px;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+font-weight:600;
+}
+
+.form-card{
+background:white;
+padding:30px;
+border-radius:18px;
+box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.form-card h2{
+margin-bottom:25px;
+color:#1e293b;
+}
+
+.form-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:18px;
+}
+
+.form-grid input,
+.form-grid select{
+padding:13px;
+border:1px solid #cbd5e1;
+border-radius:10px;
+font-size:15px;
+outline:none;
+}
+
+.form-grid input:focus,
+.form-grid select:focus{
+border-color:#2563eb;
+}
+
+.btn{
+margin-top:25px;
+background:#2563eb;
+color:white;
+padding:13px 28px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-size:15px;
+font-weight:600;
+}
+
+.btn:hover{
+background:#1d4ed8;
+}
+
+.back-btn{
+display:inline-block;
+margin-left:10px;
+background:#64748b;
+color:white;
+padding:13px 22px;
+border-radius:10px;
+text-decoration:none;
+}
+
+.flash{
+background:#dcfce7;
+color:#166534;
+padding:12px;
+margin-bottom:20px;
+border-radius:8px;
+}
+
+@media(max-width:768px){
+
+.sidebar{
+position:relative;
+width:100%;
+height:auto;
+}
+
+.main{
+margin-left:0;
+}
+
+.form-grid{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+<h2>CampusSync</h2>
+<p>Admin Panel</p>
+</div>
+
+<ul>
+
+<li><a href="/dashboard_admin">🏠 Dashboard</a></li>
+
+<li><a href="/students_admin">🎓 Students</a></li>
+
+<li><a href="/teachers_admin">👨‍🏫 Teachers</a></li>
+
+<li><a href="/subjects_admin">📚 Subjects</a></li>
+
+<li><a href="/subject_allocation_admin">🔗 Subject Allocation</a></li>
+
+<li><a href="/classes_admin" class="active">🏫 Classes</a></li>
+
+<li><a href="/timetable_admin">📅 Timetable</a></li>
+
+<li><a href="/attendance_admin">✅ Attendance</a></li>
+
+<li><a href="/reports_admin">📊 Reports</a></li>
+
+<li><a href="/settings_admin">⚙ Settings</a></li>
+
+<li><a href="/logout">🚪 Logout</a></li>
+
+</ul>
+
+</div>
+
+<div class="main">
+
+<div class="topbar">
+
+<div>
+<h1>Add New Class</h1>
+<p>Create a new class for the institution</p>
+</div>
+
+<div class="admin-chip">
+👤 {{ session.name }}
+</div>
+
+</div>
+
+{% with messages=get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<div class="flash">
+{{ message }}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="form-card">
+
+<h2>Class Information</h2>
+
+<form method="POST" action="{{ url_for('add_class') }}">
+
+<div class="form-grid">
+
+<input
+type="text"
+name="class_name"
+placeholder="Class Name"
+required>
+
+<input
+type="text"
+name="department"
+placeholder="Department"
+required>
+
+<input
+type="text"
+name="year"
+placeholder="Year"
+required>
+
+<input
+type="number"
+name="semester"
+placeholder="Semester"
+required>
+
+<input
+type="text"
+name="section"
+placeholder="Section"
+required>
+
+<input
+type="number"
+name="strength"
+placeholder="Student Strength"
+required>
+
+<input
+type="text"
+name="class_teacher"
+placeholder="Class Teacher"
+required>
+
+<select name="status" required>
+
+<option value="">Select Status</option>
+
+<option value="Active">
+Active
+</option>
+
+<option value="Inactive">
+Inactive
+</option>
+
+</select>
+
+</div>
+
+<button class="btn">
+➕ Add Class
+</button>
+
+<a href="/classes_admin" class="back-btn">
+← Back
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CampusSync - Notices</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:#eef2ff;
+display:flex;
+min-height:100vh;
+}
+
+.sidebar{
+width:260px;
+background:#1f2937;
+color:white;
+position:fixed;
+height:100%;
+padding:28px 20px;
+}
+
+.logo{
+text-align:center;
+margin-bottom:30px;
+}
+
+.logo h2{
+color:#60a5fa;
+}
+
+.logo p{
+color:#9ca3af;
+}
+
+.sidebar ul{
+list-style:none;
+margin-top:20px;
+}
+
+.sidebar ul li{
+margin:14px 0;
+}
+
+.sidebar ul li a{
+color:white;
+text-decoration:none;
+display:block;
+padding:12px 16px;
+border-radius:12px;
+transition:.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active{
+background:#2563eb;
+}
+
+.main{
+margin-left:260px;
+flex:1;
+padding:32px;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.profile-chip{
+background:white;
+padding:12px 18px;
+border-radius:999px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+font-weight:600;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-bottom:30px;
+}
+
+.stat-card{
+background:white;
+padding:25px;
+border-radius:18px;
+box-shadow:0 15px 35px rgba(0,0,0,.08);
+}
+
+.stat-card h3{
+color:#64748b;
+margin-bottom:10px;
+}
+
+.value{
+font-size:30px;
+font-weight:bold;
+color:#2563eb;
+}
+
+.notice-container{
+display:flex;
+flex-direction:column;
+gap:20px;
+}
+
+.notice-card{
+background:white;
+padding:25px;
+border-radius:18px;
+box-shadow:0 15px 35px rgba(0,0,0,.08);
+}
+
+.notice-title{
+font-size:22px;
+font-weight:bold;
+color:#2563eb;
+margin-bottom:10px;
+}
+
+.notice-info{
+font-size:14px;
+color:#64748b;
+margin-bottom:15px;
+}
+
+.notice-description{
+line-height:1.7;
+color:#334155;
+}
+
+@media(max-width:700px){
+
+body{
+display:block;
+}
+
+.sidebar{
+position:relative;
+width:100%;
+height:auto;
+}
+
+.main{
+margin-left:0;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+
+<h2>CampusSync</h2>
+
+<p>Student Portal</p>
+
+</div>
+
+<ul>
+
+<li><a href="/dashboard_student">🏠 Dashboard</a></li>
+
+<li><a href="/courses_student">📚 Courses</a></li>
+
+<li><a href="/assignments_student">📝 Assignments</a></li>
+
+<li><a href="/grades_student">📊 Grades</a></li>
+
+<li><a href="/timetable_student">📅 Timetable</a></li>
+
+<li><a href="/notices_student" class="active">📢 Notices</a></li>
+
+<li><a href="/settings_student">⚙ Settings</a></li>
+
+<li><a href="/logout">🚪 Logout</a></li>
+
+</ul>
+
+</div>
+
+<div class="main">
+
+<div class="topbar">
+
+<div>
+
+<h1>Campus Notices</h1>
+
+<p>Latest announcements from your college</p>
+
+</div>
+
+<div class="profile-chip">
+
+👩‍🎓 {{ student.name }}
+
+</div>
+
+</div>
+
+<div class="stats">
+
+<div class="stat-card">
+
+<h3>Total Notices</h3>
+
+<div class="value">{{ notices|length }}</div>
+
+</div>
+
+<div class="stat-card">
+
+<h3>Latest Notice</h3>
+
+<div class="value">
+
+{% if notices %}
+
+{{ notices[0].notice_date.strftime('%d %b') }}
+
+{% else %}
+
+-
+
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+<div class="notice-container">
+    {% if notices %}
+
+    {% for notice in notices %}
+
+    <div class="notice-card">
+
+        <div class="notice-title">
+            {{ notice.title }}
+        </div>
+
+        <div class="notice-info">
+
+            📅 {{ notice.notice_date.strftime('%d %b %Y') }}
+
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+
+            👤 {{ notice.posted_by }}
+
+        </div>
+
+        <div class="notice-description">
+            {{ notice.description }}
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <div class="notice-card" style="text-align:center;">
+
+        <h2 style="color:#2563eb;margin-bottom:15px;">
+            No Notices Available
+        </h2>
+
+        <p style="color:#64748b;">
+            There are currently no notices from the administration.
+        </p>
+
+    </div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subject Allocation - CampusSync</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Lucida Sans',sans-serif;
+}
+
+body{
+background:#f4f7fc;
+display:flex;
+min-height:100vh;
+}
+
+.sidebar{
+width:250px;
+background:#182951;
+color:white;
+position:fixed;
+height:100%;
+padding:20px;
+}
+
+.logo{
+text-align:center;
+margin-bottom:30px;
+}
+
+.logo h2{
+color:#60a5fa;
+}
+
+.logo p{
+color:#9ca3af;
+font-size:12px;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar ul li{
+margin:10px 0;
+}
+
+.sidebar ul li a{
+display:block;
+padding:12px;
+text-decoration:none;
+color:white;
+border-radius:10px;
+transition:.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active{
+background:#2563eb;
+}
+
+.main{
+margin-left:250px;
+width:100%;
+padding:30px;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+.admininfo{
+font-weight:bold;
+color:#2563eb;
+}
+
+.form-box{
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 4px 12px rgba(0,0,0,.1);
+margin-bottom:25px;
+}
+
+form{
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+align-items:center;
+}
+
+select{
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+min-width:220px;
+}
+
+button{
+background:#2563eb;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+.table-box{
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 4px 12px rgba(0,0,0,.1);
+overflow-x:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+table th{
+background:#2563eb;
+color:white;
+padding:12px;
+}
+
+table td{
+padding:12px;
+text-align:center;
+border-bottom:1px solid #ddd;
+}
+
+.delete-btn{
+background:#dc2626;
+color:white;
+padding:8px 12px;
+border-radius:6px;
+text-decoration:none;
+}
+
+.delete-btn:hover{
+background:#b91c1c;
+}
+
+@media(max-width:768px){
+
+body{
+display:block;
+}
+
+.sidebar{
+position:relative;
+width:100%;
+height:auto;
+}
+
+.main{
+margin-left:0;
+}
+
+.topbar{
+flex-direction:column;
+gap:10px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+
+<h2>CampusSync</h2>
+
+<p>Admin Panel</p>
+
+</div>
+
+<ul>
+
+<li><a href="/dashboard_admin">🏠 Dashboard</a></li>
+
+<li><a href="/students_admin">🎓 Students</a></li>
+
+<li><a href="/teachers_admin">👨‍🏫 Teachers</a></li>
+
+<li><a href="/subjects_admin">📚 Subjects</a></li>
+
+<li><a href="/subject_allocation_admin" class="active">🔗 Subject Allocation</a></li>
+
+<li><a href="/classes_admin">🏫 Classes</a></li>
+
+<li><a href="/timetable_admin">📅 Timetable</a></li>
+
+<li><a href="/attendance_admin">✅ Attendance</a></li>
+
+<li><a href="/reports_admin">📊 Reports</a></li>
+
+<li><a href="/settings_admin">⚙ Settings</a></li>
+
+<li><a href="/logout">🚪 Logout</a></li>
+
+</ul>
+
+</div>
+
+<div class="main">
+
+<div class="topbar">
+
+<div>
+
+<h1>Subject Allocation</h1>
+
+<p>Assign teachers to subjects for each class</p>
+
+</div>
+
+<div class="admininfo">
+
+{{ admin.name if admin else 'Admin' }}
+
+</div>
+
+</div>
+
+<div class="form-box">
+
+<form action="/add_subject_allocation" method="POST">
+
+<select name="class_id" required>
+
+<option value="">Select Class</option>
+
+{% for cls in classes %}
+
+<option value="{{ cls.id }}">
+
+{{ cls.class_name }}
+
+</option>
+
+{% endfor %}
+
+</select>
+
+<select name="subject_id" required>
+
+<option value="">Select Subject</option>
+
+{% for subject in subjects %}
+
+<option value="{{ subject.id }}">
+
+{{ subject.name }}
+
+</option>
+
+{% endfor %}
+
+</select>
+
+<select name="teacher_id" required>
+
+<option value="">Select Teacher</option>
+
+{% for teacher in teachers %}
+
+<option value="{{ teacher.id }}">
+
+{{ teacher.name }}
+
+</option>
+
+{% endfor %}
+
+</select>
+
+<button type="submit">
+
+Assign Subject
+
+</button>
+
+</form>
+
+</div>
+
+<div class="table-box">
+
+<h2 style="margin-bottom:20px;color:#2563eb;">
+
+Current Allocations
+
+</h2>
+
+<table>
+
+<tr>
+
+<th>Class</th>
+
+<th>Subject</th>
+
+<th>Teacher</th>
+
+<th>Action</th>
+
+</tr>
+
+{% for row in allocations %}
+
+<tr>
+
+<td>{{ row.class_name }}</td>
+
+<td>{{ row.subject }}</td>
+
+<td>{{ row.teacher }}</td>
+
+<td>
+
+<a
+href="/delete_subject_allocation/{{ row.id }}"
+class="delete-btn"
+onclick="return confirm('Delete this allocation?')">
+
+Delete
+
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+</html>

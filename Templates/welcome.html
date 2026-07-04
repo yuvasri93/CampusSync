@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusSync</title>
+
+<style>
+
+/* ===== GENERAL ===== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+    scroll-behavior:smooth;
+}
+
+body{
+    background:linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    color:#111;
+    transition:0.4s;
+}
+
+.dark body{
+    background:linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color:#e2e8f0;
+}
+
+/* ===== MAIN WEBSITE ===== */
+
+#mainContent{
+    display:block;
+}
+
+/* ===== NAVBAR ===== */
+
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:darkblue;
+    color:white;
+    padding:18px 50px;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:28px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.logo img{
+    height:45px;
+    width:45px;
+    object-fit:contain;
+}
+
+.menu{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.menu a{
+    color:white;
+    text-decoration:none;
+    font-weight:500;
+}
+
+.menu a:hover{
+    opacity:0.8;
+}
+
+.theme-btn{
+    border:none;
+    padding:10px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* ===== HERO SECTION ===== */
+
+.hero{
+    min-height:72vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:80px 40px;
+    background:linear-gradient(180deg, #eef2ff, #f8fafc);
+    color:#130db8;
+    position:relative;
+}
+
+.dark .hero{
+    background:linear-gradient(180deg, #111827, #111827);
+    color:#e2e8f0;
+}
+
+.hero-copy{
+    position:relative;
+    max-width:760px;
+    z-index:1;
+    padding:40px 50px;
+    will-change:transform;
+    /* subtle floating animation */
+    animation:float 6s ease-in-out infinite;
+}
+
+@keyframes float{
+    0%{ transform: translateY(0); }
+    50%{ transform: translateY(-20px); }
+    100%{ transform: translateY(0); }
+}
+
+.hero-copy:hover{
+    animation-play-state:paused;
+    transform:translateY(-6px);
+}
+.hero h1{
+    font-size:60px;
+    margin-bottom:18px;
+    line-height:1.05;
+}
+
+.hero .tagline{
+    font-size:22px;
+    color:#475569;
+    margin-bottom:35px;
+    line-height:1.6;
+}
+
+.buttons{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    text-decoration:none;
+    padding:16px 40px;
+    border-radius:999px;
+    font-size:17px;
+    font-weight:700;
+    transition:transform 0.25s ease, opacity 0.25s ease, box-shadow 0.25s ease;
+    border:none;
+    cursor:pointer;
+    box-shadow:0 14px 30px rgba(0,0,0,0.18);
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:150px;
+}
+
+.login-btn{
+    background:linear-gradient(135deg, #2563eb, #1e40af);
+    color:white;
+}
+
+.register-btn{
+    background:linear-gradient(135deg, #10b981, #047857);
+    color:white;
+}
+
+.btn:hover{
+    transform:translateY(-5px);
+}
+
+.btn:active{
+    transform:translateY(-2px);
+    opacity:0.85;
+}
+
+.login-btn:active{
+    background:#1a3a7a;
+}
+
+.register-btn:active{
+    background:#0d8a34;
+}
+
+
+/* ===== FEATURES ===== */
+
+.features{
+    padding:80px 40px;
+    text-align:center;
+}
+
+.features h2{
+    font-size:42px;
+    color:#2563eb;
+    margin-bottom:40px;
+}
+
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+    max-width:1200px;
+    margin:auto;
+}
+
+.card{
+    background:rgba(255,255,255,0.75);
+    backdrop-filter:blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border:1px solid rgba(255,255,255,0.3);
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.1);
+    transition:all 0.3s ease;
+    cursor: pointer;
+    animation:fadeUp 1s ease-in-out forwards;
+    opacity: 0;
+}
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+    to{
+        opacity:1;
+        transform: translateY(0);
+    }
+}
+
+.card:hover{
+    transform:translateY(-12px) scale(1.03);
+    box-shadow:0 20px 40px rgba(37,99,235,.25);
+
+}
+
+.card h3{
+    margin-bottom:15px;
+    color:#2563eb;
+}
+
+/* ===== ABOUT ===== */
+
+.about{
+    padding:80px 40px;
+    text-align:center;
+    max-width:1000px;
+    margin:auto;
+}
+
+.about h2{
+    font-size:42px;
+    color:#2563eb;
+    margin-bottom:25px;
+}
+
+.about p{
+    font-size:18px;
+    line-height:1.8;
+}
+
+/* ===== FOOTER ===== */
+
+footer{
+    background:darkblue;
+    color:white;
+    text-align:center;
+    padding:10px;
+    margin-top:50px;
+}
+
+/* ===== DARK MODE ===== */
+
+.dark{
+    background:#0f172a;
+    color:white;
+}
+
+.dark nav{
+    background:#1e293b;
+}
+
+.dark .card{
+    background:#1e293b;
+    color:white;
+}
+
+.dark .hero h1,
+.dark .features h2,
+.dark .about h2{
+    color:#60a5fa;
+}
+
+.dark .tagline{
+    color:#cbd5e1;
+}
+
+.dark footer{
+    background:#1e293b;
+}
+
+/* ===== MOBILE ===== */
+
+@media(max-width:768px){
+
+    nav{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .menu{
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+
+    .hero h1{
+        font-size:48px;
+    }
+
+    .tagline{
+        font-size:18px;
+    }
+
+    .buttons{
+        flex-direction:column;
+    }
+}
+
+</style>
+</head>
+
+<body>
+<!-- MAIN WEBSITE -->
+
+<div id="mainContent">
+
+<nav>
+
+    <div class="logo">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="CampusSync Logo">
+        <span>CampusSync</span>
+    </div>
+
+    <div class="menu">
+        <a href="#">Home</a>
+        <a href="#features">Features</a>
+        <a href="#about">About</a>
+
+        <button class="theme-btn" onclick="toggleTheme()">
+            Theme
+        </button>
+    </div>
+
+</nav>
+
+<section class="hero">
+    <div class="hero-copy">
+        <h1>Welcome to CampusSync</h1>
+        <p class="tagline">
+            The smart academic platform for timetable management, attendance, and student success.
+        </p>
+        <div class="buttons">
+            <a href="/login" class="btn login-btn">
+                Login
+            </a>
+            <a href="/register" class="btn register-btn">
+                Register
+            </a>
+        </div>
+    </div>
+    {% if teacher_count is defined or student_count is defined or subject_count is defined %}
+    <div style="position:relative; top:40px; display:flex; justify-content:center; gap:28px;">
+        <div style="background:white;padding:12px 20px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.08);">
+            <div style="font-weight:700;color:#2563eb;">{{ student_count or 0 }}</div>
+            <div style="font-size:12px;color:#64748b;">Students</div>
+        </div>
+        <div style="background:white;padding:12px 20px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.08);">
+            <div style="font-weight:700;color:#2563eb;">{{ teacher_count or 0 }}</div>
+            <div style="font-size:12px;color:#64748b;">Teachers</div>
+        </div>
+        <div style="background:white;padding:12px 20px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.08);">
+            <div style="font-weight:700;color:#2563eb;">{{ subject_count or 0 }}</div>
+            <div style="font-size:12px;color:#64748b;">Subjects</div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+<section class="features" id="features">
+
+    <h2>Key Features</h2>
+
+    <div class="feature-grid">
+
+        <div class="card">
+            <h3>📅 Smart Timetable Scheduling</h3>
+            <p>Generate and manage class schedules efficiently.</p>
+        </div>
+
+        <div class="card">
+            <h3>✅ Attendance Management</h3>
+            <p>Digital attendance tracking with real-time records.</p>
+        </div>
+
+        <div class="card">
+            <h3>👨‍🏫 Teacher Management</h3>
+            <p>Manage teachers, subjects, and schedules.</p>
+        </div>
+
+        <div class="card">
+            <h3>🎓 Student Management</h3>
+            <p>Maintain student records securely.</p>
+        </div>
+
+        <div class="card">
+            <h3>📚 Subject Management</h3>
+            <p>Organize courses and subject allocations.</p>
+        </div>
+
+        <div class="card">
+            <h3>📊 Reports & Analytics</h3>
+            <p>Visual insights into attendance and academics.</p>
+        </div>
+
+    </div>
+
+</section>
+
+{% if notices is defined and notices %}
+<section style="padding:24px 40px; max-width:1000px; margin:auto;">
+    <h2 style="color:#2563eb; margin-bottom:12px;">Latest Notices</h2>
+    <ul>
+        {% for n in notices %}
+        <li style="margin-bottom:8px;"><strong>{{ n.title }}</strong> — {{ n.notice_date }}: {{ n.body }}</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+<section class="about" id="about">
+
+    <h2>About CampusSync</h2>
+
+    <p>
+        CampusSync is a Smart Classroom and Timetable Scheduler platform
+        designed to simplify academic management for educational institutions.
+        It provides centralized management of students, teachers, timetables,
+        attendance, subjects, classrooms, and reports. The platform improves
+        efficiency, reduces scheduling conflicts, and enhances communication
+        across the campus ecosystem.
+    </p>
+
+</section>
+
+<footer>
+
+    <h3>CampusSync</h3>
+
+    <br>
+
+    <p>Connecting Learning, Scheduling Success.</p>
+
+    <br>
+
+    <p>© 2026 CampusSync. All Rights Reserved.</p>
+
+</footer>
+
+</div>
+
+<script>
+
+/* Dark Mode */
+
+function toggleTheme(){
+    document.body.classList.toggle("dark");
+}
+
+</script>
+
+</body>
+</html>

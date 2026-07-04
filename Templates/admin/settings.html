@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - CampusSync</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: 'Lucida Sans',sans-serif;
+        }
+        body{
+            background:#f4f7fc;
+            display:flex;
+            min-height:100vh;
+        }
+        .sidebar{
+            width:250px;
+            height:100%;
+            background: #182951;
+            color:white;
+            position:fixed;
+            padding:20px;
+        }
+        .logo{
+            text-align: center;
+            margin-bottom:30px;
+        }
+        .logo h2{
+            color:#60a5fa;
+        }
+        .sidebar ul{
+            list-style:none;
+        }
+        .sidebar ul li{
+            margin:10px 0;
+        }
+        .sidebar ul li a{
+            color:white;
+            text-decoration: none;
+            display:block;
+            padding:12px;
+            border-radius:10px;
+            transition:.3s;
+        }
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active{
+            background: #2563eb;
+        }
+        .main{
+            margin-left:250px;
+            width:100%;
+            padding:30px;
+        }
+        .topbar{
+            display:flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom:30px;
+        }
+        .admininfo{
+            font-weight: bold;
+            color:#2563eb
+        }
+        .settings-grid{
+            display:grid;
+            grid-template-columns:1fr;
+            gap:20px;
+        }
+        .settings-card{
+            background:White;
+            padding:25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.1);
+        }
+        .settings-card h2{
+            color:#0f172a;
+            margin-bottom:20px;
+            font-size:20px;
+            border-bottom:2px solid #e0e7ff;
+            padding-bottom:12px;
+        }
+        .setting-item{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:16px 0;
+            border-bottom:1px solid #f0f0f0;
+        }
+        .setting-item:last-child{
+            border-bottom:none;
+        }
+        .setting-label h3{
+            color:#0f172a;
+            margin-bottom:6px;
+        }
+        .setting-label p{
+            color:#64748b;
+            font-size:14px;
+        }
+        .toggle-switch{
+            width:52px;
+            height:28px;
+            background:#cbd5e1;
+            border-radius:999px;
+            position:relative;
+            cursor:pointer;
+            transition:0.3s;
+        }
+        .toggle-switch.active{
+            background:#2563eb;
+        }
+        .toggle-switch .slider{
+            position:absolute;
+            top:2px;
+            left:2px;
+            width:24px;
+            height:24px;
+            background:white;
+            border-radius:50%;
+            transition:0.3s;
+        }
+        .toggle-switch.active .slider{
+            left:26px;
+        }
+        .action-btn{
+            background:#2563eb;
+            color:white;
+            border:none;
+            padding:12px 20px;
+            border-radius:10px;
+            cursor:pointer;
+            font-weight:600;
+        }
+        .action-btn:hover{
+            background:#1d4ed8;
+        }
+        .danger-btn{
+            background:#dc2626;
+        }
+        .danger-btn:hover{
+            background:#b91c1c;
+        }
+        @media(max-width:880px){
+            .topbar{flex-direction:column;gap:10px;}
+        }
+        @media(max-width:680px){
+            body{display:block;}
+            .sidebar{position:relative;width:100%;height:auto;}
+            .main{margin-left:0;}
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <h2>CampusSync</h2>
+            <p style="color:#9ca3af;font-size:12px;">Admin Panel</p>
+        </div>
+        <ul>
+            <li><a href="/dashboard_admin">🏠 Dashboard</a></li>
+            <li><a href="/students_admin">🎓 Students</a></li>
+            <li><a href="/teachers_admin">👨‍🏫 Teachers</a></li>
+            <li><a href="/subjects_admin">📚 Subjects</a></li>
+            <li><a href="/subject_allocation_admin">🔗 Subject Allocation</a></li>
+            <li><a href="/classes_admin">🏫 Classes</a></li>
+            <li><a href="/timetable_admin">📅 Timetable</a></li>
+            <li><a href="/attendance_admin">✅ Attendance</a></li>
+            <li><a href="/reports_admin">📊 Reports</a></li>
+            <li><a href="#" class="active">⚙ Settings</a></li>
+            <li><a href="/logout">🚪 Logout</a></li>
+        </ul>
+    </div>
+    <div class="main">
+
+<div class="topbar">
+
+<div>
+<h1>System Settings</h1>
+<p>Configure CampusSync Preferences</p>
+</div>
+
+<div class="admininfo">
+{{ admin.name }}
+</div>
+
+</div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message in messages %}
+        <div style="background:#d1fae5;
+                    color:#065f46;
+                    padding:10px;
+                    margin-bottom:15px;
+                    border-radius:8px;">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="settings-grid">
+
+<form method="POST">
+
+<!-- General Settings -->
+
+<div class="settings-card">
+
+<h2>General Settings</h2>
+
+<div class="setting-item">
+
+<div class="setting-label">
+<h3>Campus Name</h3>
+<p>Official institution name</p>
+</div>
+
+<input
+type="text"
+name="campus_name"
+value="{{ settings.campus_name }}"
+style="padding:10px;border-radius:8px;border:1px solid #ccc;width:220px;">
+
+</div>
+
+<div class="setting-item">
+
+<div class="setting-label">
+<h3>Academic Year</h3>
+<p>Current academic session</p>
+</div>
+
+<input
+type="text"
+name="academic_year"
+value="{{ settings.academic_year }}"
+style="padding:10px;border-radius:8px;border:1px solid #ccc;width:220px;">
+
+</div>
+
+<div class="setting-item">
+
+<div class="setting-label">
+<h3>Session Timeout</h3>
+<p>Automatic logout (minutes)</p>
+</div>
+
+<input
+type="number"
+name="session_timeout"
+value="{{ settings.session_timeout }}"
+style="padding:10px;border-radius:8px;border:1px solid #ccc;width:100px;">
+
+</div>
+
+</div>
+            </form>
+<!-- Admin Profile -->
+
+<div class="settings-card">
+
+<h2>Admin Profile</h2>
+
+<div class="setting-item">
+
+<div class="setting-label">
+<h3>Admin Name</h3>
+<p>Administrator Name</p>
+</div>
+
+<input
+type="text"
+name="admin_name"
+value="{{ admin.name }}"
+style="padding:10px;border-radius:8px;border:1px solid #ccc;width:220px;">
+
+</div>
+
+<div class="setting-item">
+
+<div class="setting-label">
+<h3>Admin Email</h3>
+<p>Administrator Email</p>
+</div>
+
+<input
+type="email"
+name="admin_email"
+value="{{ admin.email }}"
+style="padding:10px;border-radius:8px;border:1px solid #ccc;width:220px;">
+
+</div>
+
+<div class="setting-item">
+
+<div class="setting-label">
+<h3>New Password</h3>
+<p>Leave blank if you don't want to change it</p>
+</div>
+
+<input
+type="password"
+name="password"
+placeholder="********"
+style="padding:10px;border-radius:8px;border:1px solid #ccc;width:220px;">
+
+</div>
+
+</div>
+
+<!-- Data Management -->
+
+<div class="settings-card">
+
+<h2>Data Management</h2>
+
+<div class="setting-item">
+
+<div class="setting-label">
+<h3>Backup Database</h3>
+<p>Create database backup</p>
+</div>
+
+<a href="/backup_database"
+class="action-btn"
+style="text-decoration:none;">
+
+Backup Now
+
+</a>
+
+</div>
+
+<div class="setting-item">
+
+<div class="setting-label">
+<h3>Export Data</h3>
+<p>Export complete campus data</p>
+</div>
+
+<a href="/export_database"
+class="action-btn"
+style="text-decoration:none;">
+
+Export
+
+</a>
+
+</div>
+
+<div class="setting-item">
+
+<div class="setting-label">
+<h3>Clear Cache</h3>
+<p>Clear temporary files</p>
+</div>
+
+<a href="/clear_cache"
+class="action-btn"
+style="text-decoration:none;">
+
+Clear
+
+</a>
+
+</div>
+
+</div>
+
+<div style="text-align:right;margin-top:25px;">
+
+<button
+type="submit"
+class="action-btn">
+
+💾 Save Settings
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>
