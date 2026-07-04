@@ -1,6 +1,6 @@
 # 🎓 Campus Sync
 
-Campus Sync is a web-based campus management system developed to simplify communication and administrative activities within educational institutions. The platform provides separate dashboards for **Students, Teachers, and Administrators**, enabling efficient management of announcements, attendance, reports, and academic information through a centralized system.
+Campus Sync is a web-based Timetable Scheduler and Classroom management system developed to simplify communication and administrative activities within educational institutions. The platform provides separate dashboards for **Students, Teachers, and Administrators**, enabling efficient management of announcements, attendance, reports, and academic information through a centralized system.
 
 ---
 
