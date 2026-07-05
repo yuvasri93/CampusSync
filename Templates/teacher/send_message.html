@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Send Message</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:#f4f7fc;
+}
+
+.container{
+
+width:600px;
+margin:40px auto;
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+
+}
+
+h2{
+
+text-align:center;
+margin-bottom:25px;
+color:#182951;
+
+}
+
+label{
+
+font-weight:bold;
+
+}
+
+input,
+select,
+textarea{
+
+width:100%;
+padding:12px;
+margin-top:8px;
+margin-bottom:18px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:15px;
+
+}
+
+textarea{
+
+height:150px;
+resize:none;
+
+}
+
+button{
+
+width:100%;
+padding:14px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+
+}
+
+button:hover{
+
+background:#1d4ed8;
+
+}
+
+.back{
+
+display:inline-block;
+margin-bottom:20px;
+text-decoration:none;
+color:#2563eb;
+font-weight:bold;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="/messages_teacher" class="back">
+
+← Back to Messages
+
+</a>
+
+<h2>Send Message</h2>
+
+<form method="POST">
+<div>
+
+<label>Sender</label>
+
+<input
+type="text"
+name="sender"
+placeholder="Enter sender name"
+required>
+
+<label>Receiver</label>
+
+<select name="receiver" required>
+
+<option value="">Select Receiver</option>
+
+<option value="All Students">All Students</option>
+
+<option value="CSE I">CSE I</option>
+
+<option value="CSE II">CSE II</option>
+
+<option value="CSE III">CSE III</option>
+
+<option value="CSE IV">CSE IV</option>
+
+</select>
+
+<label>Subject</label>
+
+<input
+type="text"
+name="subject"
+placeholder="Enter subject"
+required>
+
+<label>Message</label>
+
+<textarea
+name="message"
+placeholder="Type your message here..."
+required></textarea>
+
+<button type="submit">
+
+📨 Send Message
+
+</button>
+
+</form>
+
+</div>
+
+</body>
+
+</html>

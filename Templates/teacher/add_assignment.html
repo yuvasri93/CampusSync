@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Add Assignment</title>
+
+<style>
+
+body{
+
+font-family:Arial;
+background:#f4f7fc;
+
+}
+
+.container{
+
+width:500px;
+margin:40px auto;
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+
+}
+
+input{
+
+width:100%;
+padding:12px;
+margin:12px 0;
+border:1px solid #ccc;
+border-radius:8px;
+
+}
+
+button{
+
+width:100%;
+padding:12px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+
+}
+
+button:hover{
+
+background:#1d4ed8;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Add Assignment</h2>
+
+<form method="POST">
+
+<input
+type="text"
+name="title"
+placeholder="Assignment Title"
+required>
+
+<input
+type="text"
+name="class_name"
+placeholder="Class Name"
+required>
+
+<input
+type="date"
+name="due_date"
+required>
+
+<button type="submit">
+
+Save Assignment
+
+</button>
+
+</form>
+
+</div>
+
+</body>
+
+</html>

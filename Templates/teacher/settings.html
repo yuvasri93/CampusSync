@@ -1,315 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - CampusSync</title>
-    <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family: 'Lucida Sans',sans-serif;
-        }
-        body{
-            background:#eef2ff;
-            display:flex;
-            min-height:100vh;
-        }
-        .sidebar{
-            width:260px;
-            background: #182951;
-            color:#e5e7eb;
-            position:fixed;
-            height:100%;
-            padding:28px 20px;
-        }
-        .logo{
-            text-align: center;
-            margin-bottom:32px;
-        }
-        .logo h2{
-            color:#60a5fa;
-            font-size:24px;
-            letter-spacing:1px;
-        }
-        .logo p{
-            color:#9ca3af;
-            margin-top:8px;
-        }
-        .sidebar ul{
-            list-style:none;
-            margin-top:20px;
-        }
-        .sidebar ul li{
-            margin:14px 0;
-        }
-        .sidebar ul li a{
-            color:#e5e7eb;
-            text-decoration: none;
-            display:block;
-            padding:12px 16px;
-            border-radius:12px;
-            transition:.3s;
-        }
-        .sidebar ul li a:hover,
-        .sidebar ul li a.active{
-            background:#2563eb;
-        }
-        .main{
-            margin-left:260px;
-            flex:1;
-            padding:32px;
-        }
-        .topbar{
-            display:flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom:30px;
-        }
-        .topbar h1{
-            color:#0f172a;
-            font-size:32px;
-        }
-        .topbar p{
-            color:#475569;
-            margin-top:8px;
-        }
-        .profile-chip{
-            display:inline-flex;
-            align-items:center;
-            gap:10px;
-            background:#fff;
-            padding:12px 18px;
-            border-radius:999px;
-            box-shadow:0 15px 35px rgba(15,23,42,.08);
-            color:#0f172a;
-        }
-        .settings-container{
-            display:grid;
-            grid-template-columns:1fr;
-            gap:24px;
-        }
-        .settings-card{
-            background:#ffffff;
-            padding:28px;
-            border-radius:20px;
-            box-shadow: 0 18px 40px rgba(15,23,42,.08);
-        }
-        .settings-card h2{
-            color:#0f172a;
-            font-size:22px;
-            margin-bottom:24px;
-            border-bottom:2px solid #e0e7ff;
-            padding-bottom:16px;
-        }
-        .setting-item{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:20px;
-            padding-bottom:20px;
-            border-bottom:1px solid #f0f0f0;
-        }
-        .setting-item:last-child{
-            margin-bottom:0;
-            padding-bottom:0;
-            border-bottom:none;
-        }
-        .setting-label h3{
-            color:#0f172a;
-            margin-bottom:6px;
-        }
-        .setting-label p{
-            color:#64748b;
-            font-size:14px;
-        }
-        .toggle-switch{
-            width:52px;
-            height:28px;
-            background:#cbd5e1;
-            border-radius:999px;
-            position:relative;
-            cursor:pointer;
-            transition:0.3s;
-        }
-        .toggle-switch.active{
-            background:#2563eb;
-        }
-        .toggle-switch .slider{
-            position:absolute;
-            top:2px;
-            left:2px;
-            width:24px;
-            height:24px;
-            background:white;
-            border-radius:50%;
-            transition:0.3s;
-        }
-        .toggle-switch.active .slider{
-            left:26px;
-        }
-        .input-group{
-            display:flex;
-            gap:12px;
-            align-items:flex-end;
-        }
-        .input-group input{
-            flex:1;
-            padding:12px 16px;
-            border:1px solid #e5e7eb;
-            border-radius:10px;
-            font-size:14px;
-        }
-        .action-btn{
-            background:#2563eb;
-            color:white;
-            border:none;
-            padding:12px 24px;
-            border-radius:10px;
-            cursor:pointer;
-            font-weight:600;
-        }
-        .action-btn:hover{
-            background:#1d4ed8;
-        }
-        .danger-btn{
-            background:#dc2626;
-        }
-        .danger-btn:hover{
-            background:#b91c1c;
-        }
-        @media(max-width:880px){
-            .topbar{flex-direction:column;align-items:flex-start;gap:18px;}
-        }
-        @media(max-width:680px){
-            body{display:block;}
-            .sidebar{position:relative;width:100%;height:auto;}
-            .main{margin-left:0;padding:24px;}
-        }
-    </style>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Teacher Settings</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+display:flex;
+background:#f4f7fc;
+min-height:100vh;
+}
+
+.sidebar{
+width:250px;
+background:#182951;
+color:white;
+height:100%;
+position:fixed;
+padding:20px;
+}
+
+.logo{
+text-align:center;
+margin-bottom:30px;
+}
+
+.logo h2{
+color:#60a5fa;
+}
+
+.logo p{
+font-size:12px;
+color:#ccc;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar ul li{
+margin:10px 0;
+}
+
+.sidebar ul li a{
+display:block;
+padding:12px;
+color:white;
+text-decoration:none;
+border-radius:8px;
+transition:.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active{
+background:#2563eb;
+}
+
+.main{
+margin-left:250px;
+width:100%;
+padding:40px;
+}
+
+.card{
+
+width:700px;
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+
+}
+
+.card h2{
+
+margin-bottom:25px;
+color:#182951;
+
+}
+
+label{
+
+font-weight:bold;
+
+}
+
+input{
+
+width:100%;
+padding:12px;
+margin-top:8px;
+margin-bottom:18px;
+border:1px solid #ccc;
+border-radius:8px;
+
+}
+
+button{
+
+width:100%;
+padding:14px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+
+}
+
+button:hover{
+
+background:#1d4ed8;
+
+}
+
+</style>
+
 </head>
+
 <body>
-    <div class="sidebar">
-        <div class="logo">
-            <h2>CampusSync</h2>
-            <p>Teacher Panel</p>
-        </div>
-        <ul>
-            <li><a href="/dashboard_teacher">🏠 Dashboard</a></li>
-            <li><a href="/classes_teacher">📋 My Classes</a></li>
-            <li><a href="/assignments_teacher">📝 Assignments</a></li>
-            <li><a href="/attendance_teacher">📊 Attendance</a></li>
-            <li><a href="/schedule_teacher">📆 Schedule</a></li>
-            <li><a href="/messages_teacher">💬 Messages</a></li>
-            <li><a href="#" class="active">⚙ Settings</a></li>
-            <li><a href="/logout">🚪 Logout</a></li>
-        </ul>
-    </div>
-    <div class="main">
-        <div class="topbar">
-            <div>
-                <h1>Settings</h1>
-                <p>Manage your account preferences and settings</p>
-            </div>
-            <div class="profile-chip">👨‍🏫 {{ user_name or 'Teacher' }}</div>
-        </div>
 
-        <div class="settings-container">
-            <div class="settings-card">
-                <h2>Notification Preferences</h2>
-                
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <h3>Email Notifications</h3>
-                        <p>Receive emails for new assignments and messages</p>
-                    </div>
-                    <div class="toggle-switch active">
-                        <div class="slider"></div>
-                    </div>
-                </div>
+<div class="sidebar">
 
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <h3>Assignment Reminders</h3>
-                        <p>Get notifications for upcoming assignment deadlines</p>
-                    </div>
-                    <div class="toggle-switch active">
-                        <div class="slider"></div>
-                    </div>
-                </div>
+<div class="logo">
 
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <h3>Attendance Alerts</h3>
-                        <p>Notify about low attendance in your classes</p>
-                    </div>
-                    <div class="toggle-switch">
-                        <div class="slider"></div>
-                    </div>
-                </div>
-            </div>
+<h2>CampusSync</h2>
 
-            <div class="settings-card">
-                <h2>Privacy & Security</h2>
-                
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <h3>Two-Factor Authentication</h3>
-                        <p>Add an extra layer of security to your account</p>
-                    </div>
-                    <div class="toggle-switch">
-                        <div class="slider"></div>
-                    </div>
-                </div>
+<p>Teacher Panel</p>
 
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <h3>Profile Visibility</h3>
-                        <p>Allow students to view your profile</p>
-                    </div>
-                    <div class="toggle-switch active">
-                        <div class="slider"></div>
-                    </div>
-                </div>
+</div>
 
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <h3>Change Password</h3>
-                        <p>Update your account password</p>
-                    </div>
-                    <button class="action-btn">Change</button>
-                </div>
-            </div>
+<ul>
 
-            <div class="settings-card">
-                <h2>Account Management</h2>
-                
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <h3>Email Address</h3>
-                        <p>Update your email address</p>
-                    </div>
-                    <button class="action-btn">Update</button>
-                </div>
+<li><a href="/dashboard_teacher">🏠 Dashboard</a></li>
 
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <h3>Download Data</h3>
-                        <p>Export your account data and records</p>
-                    </div>
-                    <button class="action-btn">Download</button>
-                </div>
+<li><a href="/classes_teacher">🏫 My Classes</a></li>
 
-                <div class="setting-item">
-                    <div class="setting-label">
-                        <h3>Deactivate Account</h3>
-                        <p>Temporarily disable your account</p>
-                    </div>
-                    <button class="action-btn danger-btn">Deactivate</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<li><a href="/attendance_teacher">✅ Attendance</a></li>
+
+<li><a href="/schedule_teacher">📅 Schedule</a></li>
+
+<li><a href="/assignments_teacher">📝 Assignments</a></li>
+
+<li><a href="/messages_teacher">💬 Messages</a></li>
+
+<li><a href="/settings_teacher" class="active">⚙ Settings</a></li>
+
+<li><a href="/logout">🚪 Logout</a></li>
+
+</ul>
+
+</div>
+
+<div class="main">
+
+<div class="card">
+
+<h2>Teacher Profile</h2>
+
+<form action="{{ url_for('update_teacher_profile') }}" method="POST">
+
+<input
+type="hidden"
+name="id"
+value="{{ teacher.id }}">
+
+<label>Name</label>
+
+<input
+type="text"
+name="name"
+value="{{ teacher.name }}"
+required>
+
+<label>Email</label>
+
+<input
+type="email"
+name="email"
+value="{{ teacher.email }}"
+required>
+
+<label>Department</label>
+
+<input
+type="text"
+name="department"
+value="{{ teacher.department }}"
+required>
+
+<label>Designation</label>
+
+<input
+type="text"
+name="designation"
+value="{{ teacher.designation }}"
+required>
+
+<button type="submit">
+
+💾 Update Profile
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
 </body>
+
 </html>

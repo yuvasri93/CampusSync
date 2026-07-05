@@ -1,327 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedule - CampusSync</title>
-    <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family: 'Lucida Sans',sans-serif;
-        }
-        body{
-            background:#eef2ff;
-            display:flex;
-            min-height:100vh;
-        }
-        .sidebar{
-            width:260px;
-            background: #182951;
-            color:#e5e7eb;
-            position:fixed;
-            height:100%;
-            padding:28px 20px;
-        }
-        .logo{
-            text-align: center;
-            margin-bottom:32px;
-        }
-        .logo h2{
-            color:#60a5fa;
-            font-size:24px;
-            letter-spacing:1px;
-        }
-        .logo p{
-            color:#9ca3af;
-            margin-top:8px;
-        }
-        .sidebar ul{
-            list-style:none;
-            margin-top:20px;
-        }
-        .sidebar ul li{
-            margin:14px 0;
-        }
-        .sidebar ul li a{
-            color:#e5e7eb;
-            text-decoration: none;
-            display:block;
-            padding:12px 16px;
-            border-radius:12px;
-            transition:.3s;
-        }
-        .sidebar ul li a:hover,
-        .sidebar ul li a.active{
-            background:#2563eb;
-        }
-        .main{
-            margin-left:260px;
-            flex:1;
-            padding:32px;
-        }
-        .topbar{
-            display:flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom:30px;
-        }
-        .topbar h1{
-            color:#0f172a;
-            font-size:32px;
-        }
-        .topbar p{
-            color:#475569;
-            margin-top:8px;
-        }
-        .profile-chip{
-            display:inline-flex;
-            align-items:center;
-            gap:10px;
-            background:#fff;
-            padding:12px 18px;
-            border-radius:999px;
-            box-shadow:0 15px 35px rgba(15,23,42,.08);
-            color:#0f172a;
-        }
-        .controls{
-            display:flex;
-            gap:12px;
-            margin-bottom:24px;
-        }
-        .action-btn{
-            background:#2563eb;
-            color:white;
-            border:none;
-            padding:12px 20px;
-            border-radius:10px;
-            cursor:pointer;
-            font-weight:600;
-        }
-        .action-btn:hover{
-            background:#1d4ed8;
-        }
-        .schedule-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-            gap:22px;
-            margin-bottom:32px;
-        }
-        .schedule-card{
-            background:#ffffff;
-            padding:24px;
-            border-radius:20px;
-            box-shadow: 0 18px 40px rgba(15,23,42,.08);
-            border-left:5px solid #2563eb;
-        }
-        .schedule-card h3{
-            color:#0f172a;
-            font-size:20px;
-            margin-bottom:16px;
-        }
-        .schedule-item{
-            display:flex;
-            align-items:center;
-            gap:16px;
-            margin-bottom:16px;
-            padding-bottom:16px;
-            border-bottom:1px solid #e5e7eb;
-        }
-        .schedule-item:last-child{
-            margin-bottom:0;
-            padding-bottom:0;
-            border-bottom:none;
-        }
-        .time-badge{
-            background:#e0e7ff;
-            color:#2563eb;
-            padding:8px 12px;
-            border-radius:8px;
-            font-weight:700;
-            font-size:13px;
-            min-width:60px;
-            text-align:center;
-        }
-        .schedule-detail h4{
-            color:#0f172a;
-            margin-bottom:4px;
-        }
-        .schedule-detail p{
-            color:#475569;
-            font-size:14px;
-        }
-        .table-con{
-            background-color: white;
-            padding:24px;
-            border-radius:20px;
-            box-shadow:0 18px 40px rgba(15,23,42,.08);
-        }
-        .table-con h2{
-            color:#0f172a;
-            margin-bottom:18px;
-        }
-        .controls{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
-        .form-card{background:#fff;padding:20px;border-radius:20px;box-shadow:0 18px 40px rgba(15,23,42,.08);}
-        .form-title{font-size:18px;font-weight:700;color:#0f172a;margin-bottom:12px;}
-        .field-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px;}
-        .field-row input, .field-row select{width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;}
-        .form-actions{display:flex;gap:10px;margin-top:12px;}
-        .action-cell a{padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;}
-        .edit-link{background:#e0e7ff;color:#2563eb;}
-        .delete-link{background:#fee2e2;color:#dc2626;}
-        table{
-            width:100%;
-            border-collapse: collapse;
-        }
-        table th, table td{
-            padding:16px 12px;
-            text-align:left;
-            border-bottom:1px solid #e5e7eb;
-        }
-        table th{
-            color:#2563eb;
-            font-weight:700;
-        }
-        table td{
-            color:#334155;
-        }
-        @media(max-width:880px){
-            .topbar{flex-direction:column;align-items:flex-start;gap:18px;}
-        }
-        @media(max-width:680px){
-            body{display:block;}
-            .sidebar{position:relative;width:100%;height:auto;}
-            .main{margin-left:0;padding:24px;}
-        }
-    </style>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Teacher Schedule</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Lucida Sans',sans-serif;
+}
+
+body{
+display:flex;
+background:#f4f7fc;
+min-height:100vh;
+}
+
+.sidebar{
+width:250px;
+background:#182951;
+color:white;
+height:100vh;
+position:fixed;
+padding:20px;
+}
+
+.logo{
+text-align:center;
+margin-bottom:30px;
+}
+
+.logo h2{
+color:#60a5fa;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar ul li{
+margin:10px 0;
+}
+
+.sidebar ul li a{
+display:block;
+padding:12px;
+color:white;
+text-decoration:none;
+border-radius:10px;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active{
+background:#2563eb;
+}
+
+.main{
+margin-left:250px;
+width:100%;
+padding:30px;
+}
+
+.table-box{
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+overflow-x:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+table th{
+background:#2563eb;
+color:white;
+padding:12px;
+}
+
+table td{
+padding:12px;
+text-align:center;
+border-bottom:1px solid #ddd;
+}
+
+</style>
+
 </head>
+
 <body>
-    <div class="sidebar">
-        <div class="logo">
-            <h2>CampusSync</h2>
-            <p>Teacher Panel</p>
-        </div>
-        <ul>
-            <li><a href="/dashboard_teacher">🏠 Dashboard</a></li>
-            <li><a href="/classes_teacher">📋 My Classes</a></li>
-            <li><a href="/assignments_teacher">📝 Assignments</a></li>
-            <li><a href="/attendance_teacher">📊 Attendance</a></li>
-            <li><a href="#" class="active">📆 Schedule</a></li>
-            <li><a href="/messages_teacher">💬 Messages</a></li>
-            <li><a href="/settings_teacher">⚙ Settings</a></li>
-            <li><a href="/logout">🚪 Logout</a></li>
-        </ul>
-    </div>
-    <div class="main">
-        <div class="topbar">
-            <div>
-                <h1>Schedule</h1>
-                <p>View and manage your class timetable</p>
-            </div>
-            <div class="profile-chip">📆 Name</div>
-        </div>
 
-        <div class="controls">
-            <div class="form-card">
-                <div class="form-title">{{ 'Edit Schedule Item' if edit_schedule else 'Add Schedule Item' }}</div>
-                <form method="post" action="{{ url_for('teacher_edit_schedule', id=edit_schedule.id) if edit_schedule else url_for('teacher_add_schedule') }}">
-                    <div class="field-row">
-                        <input name="class_name" placeholder="Class Name" value="{{ edit_schedule.class_name if edit_schedule else '' }}" required>
-                        <select name="day">
-                            <option value="Monday" {% if edit_schedule and edit_schedule.day == 'Monday' %}selected{% endif %}>Monday</option>
-                            <option value="Tuesday" {% if edit_schedule and edit_schedule.day == 'Tuesday' %}selected{% endif %}>Tuesday</option>
-                            <option value="Wednesday" {% if edit_schedule and edit_schedule.day == 'Wednesday' %}selected{% endif %}>Wednesday</option>
-                            <option value="Thursday" {% if edit_schedule and edit_schedule.day == 'Thursday' %}selected{% endif %}>Thursday</option>
-                            <option value="Friday" {% if edit_schedule and edit_schedule.day == 'Friday' %}selected{% endif %}>Friday</option>
-                            <option value="Saturday" {% if edit_schedule and edit_schedule.day == 'Saturday' %}selected{% endif %}>Saturday</option>
-                        </select>
-                    </div>
-                    <div class="field-row">
-                        <input name="period" type="number" placeholder="Period" value="{{ edit_schedule.period if edit_schedule else '' }}" required>
-                        <input name="subject" placeholder="Subject" value="{{ edit_schedule.subject if edit_schedule else '' }}" required>
-                    </div>
-                    <div class="field-row">
-                        <input name="teacher" placeholder="Teacher" value="{{ edit_schedule.teacher if edit_schedule else '' }}" required>
-                        <input name="room" placeholder="Room" value="{{ edit_schedule.room if edit_schedule else '' }}" required>
-                    </div>
-                    <div class="form-actions">
-                        <button class="action-btn" type="submit">{{ 'Save Changes' if edit_schedule else 'Add Schedule' }}</button>
-                        {% if edit_schedule %}<a class="action-btn" href="{{ url_for('schedule_teacher') }}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">Cancel</a>{% endif %}
-                    </div>
-                </form>
-            </div>
-        </div>
+<div class="sidebar">
 
-        <div class="schedule-grid">
-            <div class="schedule-card">
-                <h3>Monday & Wednesday</h3>
-                <div class="schedule-item">
-                    <span class="time-badge">09:00</span>
-                    <div class="schedule-detail">
-                        <h4>Mathematics 101</h4>
-                        <p>Room A2 • 45 students</p>
-                    </div>
-                </div>
-                <div class="schedule-item">
-                    <span class="time-badge">11:00</span>
-                    <div class="schedule-detail">
-                        <h4>English Literature</h4>
-                        <p>Room B1 • 35 students</p>
-                    </div>
-                </div>
-                <div class="schedule-item">
-                    <span class="time-badge">02:00</span>
-                    <div class="schedule-detail">
-                        <h4>Office Hours</h4>
-                        <p>Room 210 • By appointment</p>
-                    </div>
-                </div>
-            </div>
+<div class="logo">
 
-            <div class="schedule-card">
-                <h3>Tuesday & Thursday</h3>
-                <div class="schedule-item">
-                    <span class="time-badge">09:30</span>
-                    <div class="schedule-detail">
-                        <h4>Physics Lab</h4>
-                        <p>Lab 3 • 30 students</p>
-                    </div>
-                </div>
-                <div class="schedule-item">
-                    <span class="time-badge">02:00</span>
-                    <div class="schedule-detail">
-                        <h4>Lab Review</h4>
-                        <p>Lab 3 • 30 students</p>
-                    </div>
-                </div>
-            </div>
+<h2>CampusSync</h2>
 
-            <div class="schedule-card">
-                <h3>Friday</h3>
-                <div class="schedule-item">
-                    <span class="time-badge">10:00</span>
-                    <div class="schedule-detail">
-                        <h4>Chemistry Basics</h4>
-                        <p>Lab 1 • 28 students</p>
-                    </div>
-                </div>
-                <div class="schedule-item">
-                    <span class="time-badge">01:30</span>
-                    <div class="schedule-detail">
-                        <h4>Staff Meeting</h4>
-                        <p>Conference Room • All staff</p>
-                    </div>
-                </div>
-                <div class="schedule-item">
-                    <span class="time-badge">03:30</span>
-                    <div class="schedule-detail">
-                        <h4>Grading Time</h4>
-                        <p>Room 210 • Self-scheduled</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<p>Teacher Panel</p>
+
+</div>
+
+<ul>
+
+<li><a href="/dashboard_teacher">🏠 Dashboard</a></li>
+
+<li><a href="/classes_teacher">🏫 My Classes</a></li>
+
+<li><a href="/attendance_teacher">✅ Attendance</a></li>
+
+<li><a href="/schedule_teacher" class="active">📅 Schedule</a></li>
+
+<li><a href="/assignments_teacher">📝 Assignments</a></li>
+
+<li><a href="/messages_teacher">💬 Messages</a></li>
+
+<li><a href="/settings_teacher">⚙ Settings</a></li>
+
+<li><a href="/logout">🚪 Logout</a></li>
+
+</ul>
+
+</div>
+
+<div class="main">
+
+<h1>Weekly Schedule</h1>
+
+<br>
+
+<div class="table-box">
+
+<table>
+
+<tr>
+
+<th>Day</th>
+<th>Period</th>
+<th>Class</th>
+<th>Subject</th>
+<th>Teacher</th>
+<th>Room</th>
+
+</tr>
+{% if timetable %}
+
+{% for row in timetable %}
+
+<tr>
+
+<td>{{ row.day }}</td>
+
+<td>{{ row.period }}</td>
+
+<td>{{ row.class_name }}</td>
+
+<td>{{ row.subject }}</td>
+
+<td>{{ row.teacher }}</td>
+
+<td>{{ row.room }}</td>
+
+</tr>
+
+{% endfor %}
+
+{% else %}
+
+<tr>
+
+<td colspan="6" style="text-align:center;padding:20px;">
+
+No timetable available.
+
+</td>
+
+</tr>
+
+{% endif %}
+
+</table>
+
+</div>
+
+</div>
+
 </body>
+
 </html>

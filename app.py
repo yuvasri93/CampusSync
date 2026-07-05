@@ -475,12 +475,54 @@ def register():
 
 @app.route("/dashboard_teacher")
 def dashboard_teacher():
+
+    if "email" not in session or session.get("role") != "teacher":
+        return redirect(url_for("login"))
+
+    teacher_name = session.get("name")
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    # Total Classes
+    cursor.execute("SELECT COUNT(*) AS total FROM classes")
+    total_classes = cursor.fetchone()["total"]
+
+    # Total Students
+    cursor.execute("SELECT COUNT(*) AS total FROM students")
+    total_students = cursor.fetchone()["total"]
+
+    # Total Subjects
+    cursor.execute("SELECT COUNT(*) AS total FROM subjects")
+    total_subjects = cursor.fetchone()["total"]
+
+    # Today's Classes
+    import datetime
+
+    today = datetime.datetime.today().strftime("%A")
+    cursor.execute("""
+    SELECT *
+    FROM timetable
+    WHERE teacher=%s
+    AND day=%s
+    ORDER BY period
+    """, (teacher_name, today))
+    today_schedule = cursor.fetchall()
+
+    total_today_classes = len(today_schedule)
+
+    cursor.close()
+    connection.close()
+
     return render_template(
         "teacher/dashboard.html",
-        assignments=fetch_all("SELECT * FROM assignments ORDER BY due_date LIMIT 4"),
-        attendance=fetch_all("SELECT * FROM attendance ORDER BY attendance_date DESC LIMIT 4"),
+        total_classes=total_classes,
+        total_students=total_students,
+        total_subjects=total_subjects,
+        total_today_classes=total_today_classes,
+        today_schedule=today_schedule,
+        today=today
     )
-
 
 @app.route("/dashboard_student")
 def dashboard_student():
@@ -662,14 +704,42 @@ def student_delete_dashboard_item(id):
 
 @app.route("/classes_teacher")
 def classes_teacher():
+
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM subjects ORDER BY name")
-    subjects = cursor.fetchall()
+
+    # If login is implemented later,
+    # replace this with session["teacher_name"]
+
+    teacher_name =session["name"]
+
+    # Show all classes assigned to this teacher
+
+    cursor.execute("""
+        SELECT DISTINCT
+            c.class_name,
+            s.name AS subject
+        FROM subject_allocation sa
+        JOIN classes c
+            ON sa.class_id=c.id
+        JOIN subjects s
+            ON sa.subject_id=s.id
+        JOIN teachers t
+            ON sa.teacher_id=t.id
+        WHERE t.name=%s
+        ORDER BY c.class_name
+    """,(teacher_name,))
+
+    classes = cursor.fetchall()
+
     cursor.close()
     connection.close()
-    return render_template("teacher/classes.html", subjects=subjects, edit_subject=None)
 
+    return render_template(
+        "teacher/classes.html",
+        classes=classes,
+        teacher_name=teacher_name
+    )
 
 @app.route("/teacher_add_subject", methods=["POST"])
 def teacher_add_subject():
@@ -775,61 +845,200 @@ def teacher_add_assignment():
     return redirect(url_for("assignments_teacher"))
 
 
-@app.route("/teacher_edit_assignment/<int:id>", methods=["GET", "POST"])
-def teacher_edit_assignment(id):
+@app.route("/edit_assignment/<int:id>", methods=["GET", "POST"])
+def edit_assignment(id):
+
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
+
     if request.method == "POST":
-        cursor.execute(
-            """
+
+        title = request.form["title"]
+        class_name = request.form["class_name"]
+        due_date = request.form["due_date"]
+        submissions = request.form["submissions"]
+        status = request.form["status"]
+
+        cursor.execute("""
             UPDATE assignments
-            SET title=%s, class_name=%s, due_date=%s, submissions=%s, status=%s
+            SET
+                title=%s,
+                class_name=%s,
+                due_date=%s,
+                submissions=%s,
+                status=%s
             WHERE id=%s
-            """,
-            (
-                request.form.get("title"),
-                request.form.get("class_name"),
-                request.form.get("due_date"),
-                request.form.get("submissions", "0/0"),
-                request.form.get("status", "Active"),
-                id,
-            ),
-        )
+        """, (
+            title,
+            class_name,
+            due_date,
+            submissions,
+            status,
+            id
+        ))
+
         connection.commit()
+
         cursor.close()
         connection.close()
+
         return redirect(url_for("assignments_teacher"))
 
-    cursor.execute("SELECT * FROM assignments WHERE id=%s", (id,))
+    cursor.execute(
+        "SELECT * FROM assignments WHERE id=%s",
+        (id,)
+    )
+
     assignment = cursor.fetchone()
-    cursor.execute("SELECT * FROM assignments ORDER BY due_date")
-    assignments = cursor.fetchall()
+
     cursor.close()
     connection.close()
-    return render_template("teacher/assignments.html", assignments=assignments, edit_assignment=assignment)
 
+    return render_template(
+        "teacher/edit_assignment.html",
+        assignment=assignment
+    )
 
-@app.route("/teacher_delete_assignment/<int:id>")
-def teacher_delete_assignment(id):
+@app.route("/delete_assignment/<int:id>")
+def delete_assignment(id):
+
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute("DELETE FROM assignments WHERE id=%s", (id,))
+
+    cursor.execute(
+        "DELETE FROM assignments WHERE id=%s",
+        (id,)
+    )
+
     connection.commit()
+
     cursor.close()
     connection.close()
-    return redirect(url_for("assignments_teacher"))
 
+    return redirect(url_for("assignments_teacher"))
 
 @app.route("/attendance_teacher")
 def attendance_teacher():
+
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM attendance ORDER BY attendance_date DESC")
-    attendance = cursor.fetchall()
+
+    # Replace with session later
+    teacher_name = "Teacher"
+
+    # Classes assigned to teacher
+    cursor.execute("""
+SELECT DISTINCT class_name
+FROM classes
+ORDER BY class_name
+""")
+
+    classes = cursor.fetchall()
+
+    selected_class = request.args.get("class_name")
+
+    students = []
+
+    if selected_class:
+
+        cursor.execute("""
+            SELECT
+                id,
+                name,
+                enrollment_id,
+                class_name
+            FROM students
+            WHERE class_name=%s
+            ORDER BY name
+        """,(selected_class,))
+
+        students = cursor.fetchall()
+
     cursor.close()
     connection.close()
-    return render_template("teacher/attendance.html", attendance=attendance, edit_attendance=None)
 
+    return render_template(
+        "teacher/attendance.html",
+        classes=classes,
+        students=students,
+        selected_class=selected_class
+    )
+
+@app.route("/save_teacher_attendance", methods=["POST"])
+def save_teacher_attendance():
+
+    class_name = request.form["class_name"]
+
+    attendance_date = request.form["attendance_date"]
+
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    for key in request.form:
+
+        if key.startswith("status_"):
+
+            student_id = key.split("_")[1]
+
+            status = request.form[key]
+
+            cursor.execute("""
+                SELECT name
+                FROM students
+                WHERE id=%s
+            """,(student_id,))
+
+            student_name = cursor.fetchone()[0]
+
+            # Check if attendance already exists
+            cursor.execute("""
+            SELECT id
+            FROM attendance
+            WHERE student_name=%s
+            AND class_name=%s
+            AND attendance_date=%s
+            """, (
+            student_name,
+            class_name,
+            attendance_date
+            ))
+
+            existing = cursor.fetchone()
+
+            if existing:
+                cursor.execute("""
+                    UPDATE attendance
+                    SET status=%s
+                    WHERE id=%s
+                """, (
+                    status,
+                    existing[0]
+                ))
+            else:
+                cursor.execute("""
+                    INSERT INTO attendance
+                    (
+                        student_name,
+                        class_name,
+                        attendance_date,
+                        status
+                    )
+                    VALUES(%s,%s,%s,%s)
+                """, (
+                    student_name,
+                    class_name,
+                    attendance_date,
+                    status
+                ))
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    return redirect(url_for(
+        "attendance_teacher",
+        class_name=class_name
+    ))
 
 @app.route("/teacher_add_attendance", methods=["POST"])
 def teacher_add_attendance():
@@ -896,17 +1105,41 @@ def teacher_delete_attendance(id):
     connection.close()
     return redirect(url_for("attendance_teacher"))
 
-
 @app.route("/schedule_teacher")
 def schedule_teacher():
+
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM timetable ORDER BY FIELD(day,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'), period")
-    schedule_items = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT
+            day,
+            period,
+            class_name,
+            subject,
+            teacher,
+            room
+        FROM timetable
+        ORDER BY
+            FIELD(day,
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday'),
+            period
+    """)
+
+    timetable = cursor.fetchall()
+
     cursor.close()
     connection.close()
-    return render_template("teacher/schedule.html", schedule_items=schedule_items, edit_schedule=None)
 
+    return render_template(
+        "teacher/schedule.html",
+        timetable=timetable
+    )
 
 @app.route("/teacher_add_schedule", methods=["POST"])
 def teacher_add_schedule():
@@ -977,17 +1210,78 @@ def teacher_delete_schedule(id):
     connection.close()
     return redirect(url_for("schedule_teacher"))
 
-
 @app.route("/messages_teacher")
 def messages_teacher():
+
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM notices ORDER BY notice_date DESC")
-    notices = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT *
+        FROM messages
+        ORDER BY sent_date DESC
+    """)
+
+    messages = cursor.fetchall()
+
     cursor.close()
     connection.close()
-    return render_template("teacher/messages.html", notices=notices, edit_notice=None)
 
+    return render_template(
+        "teacher/messages.html",
+        messages=messages
+    )
+
+@app.route("/delete_message/<int:id>")
+def delete_message(id):
+
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        "DELETE FROM messages WHERE id=%s",
+        (id,)
+    )
+
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+    return redirect(url_for("messages_teacher"))
+
+@app.route("/send_message", methods=["GET", "POST"])
+def send_message():
+
+    if request.method == "POST":
+
+        sender = request.form["sender"]
+        receiver = request.form["receiver"]
+        subject = request.form["subject"]
+        message = request.form["message"]
+
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            INSERT INTO messages
+            (sender, receiver, subject, message)
+            VALUES (%s, %s, %s, %s)
+        """, (
+            sender,
+            receiver,
+            subject,
+            message
+        ))
+
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        return redirect(url_for("messages_teacher"))
+
+    return render_template("teacher/send_message.html")
 
 @app.route("/teacher_add_notice", methods=["POST"])
 def teacher_add_notice():
@@ -1055,8 +1349,63 @@ def teacher_delete_notice(id):
 
 @app.route("/settings_teacher")
 def settings_teacher():
-    user = get_first_user_by_role("teacher") or {}
-    return render_template("teacher/settings.html", user_name=user.get("name") if user else "Teacher")
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    # Replace "jahir" with the logged-in teacher later
+    teacher_name = "jahir"
+
+    cursor.execute("""
+        SELECT *
+        FROM teachers
+        WHERE name=%s
+    """, (teacher_name,))
+
+    teacher = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return render_template(
+        "teacher/settings.html",
+        teacher=teacher
+    )
+
+@app.route("/update_teacher_profile", methods=["POST"])
+def update_teacher_profile():
+
+    name = request.form["name"]
+    email = request.form["email"]
+    department = request.form["department"]
+    designation = request.form["designation"]
+
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        UPDATE teachers
+        SET
+            name=%s,
+            email=%s,
+            department=%s,
+            designation=%s
+        WHERE id=%s
+    """, (
+        name,
+        email,
+        department,
+        designation,
+        request.form["id"]
+    ))
+
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+    return redirect(url_for("settings_teacher"))
+
 
 
 @app.route("/dashboard_admin")
@@ -2594,47 +2943,46 @@ def courses_student():
         subjects=subjects
     )
 
-@app.route("/assignments_student")
-def assignments_student():
 
-    if "email" not in session:
-        return redirect(url_for("login"))
+@app.route("/add_assignment", methods=["GET", "POST"])
+def add_assignment():
 
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
+    if request.method == "POST":
 
-    # Logged-in student
-    cursor.execute("""
-        SELECT *
-        FROM students
-        WHERE email=%s
-    """, (session["email"],))
+        title = request.form["title"]
+        class_name = request.form["class_name"]
+        due_date = request.form["due_date"]
 
-    student = cursor.fetchone()
+        connection = get_db_connection()
+        cursor = connection.cursor()
 
-    if not student:
+        cursor.execute("""
+            INSERT INTO assignments
+            (
+                title,
+                class_name,
+                due_date,
+                submissions,
+                status
+            )
+            VALUES(%s,%s,%s,%s,%s)
+        """, (
+            title,
+            class_name,
+            due_date,
+            "0",
+            "Active"
+        ))
+
+        connection.commit()
+
         cursor.close()
         connection.close()
-        return "Student not found"
 
-    # Assignments for student's class
-    cursor.execute("""
-        SELECT *
-        FROM assignments
-        WHERE class_name=%s
-        ORDER BY due_date ASC
-    """, (student["class_name"],))
+        return redirect(url_for("assignments_teacher"))
 
-    assignments = cursor.fetchall()
+    return render_template("teacher/add_assignment.html")
 
-    cursor.close()
-    connection.close()
-
-    return render_template(
-        "student/assignments.html",
-        student=student,
-        assignments=assignments
-    )
 
 @app.route("/student_add_submission", methods=["POST"])
 def student_add_submission():

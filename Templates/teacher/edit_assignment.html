@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Edit Assignment</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f7fc;
+}
+
+.container{
+width:500px;
+margin:40px auto;
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin:12px 0;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Edit Assignment</h2>
+
+<form method="POST">
+
+<input
+type="text"
+name="title"
+value="{{ assignment.title }}"
+required>
+
+<input
+type="text"
+name="class_name"
+value="{{ assignment.class_name }}"
+required>
+
+<input
+type="date"
+name="due_date"
+value="{{ assignment.due_date }}"
+required>
+
+<input
+type="number"
+name="submissions"
+value="{{ assignment.submissions }}"
+required>
+
+<select name="status">
+
+<option value="Active"
+{% if assignment.status=="Active" %}selected{% endif %}>
+Active
+</option>
+
+<option value="Closed"
+{% if assignment.status=="Closed" %}selected{% endif %}>
+Closed
+</option>
+
+</select>
+
+<button type="submit">
+
+Update Assignment
+
+</button>
+
+</form>
+
+</div>
+
+</body>
+
+</html>
