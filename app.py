@@ -523,9 +523,344 @@ def dashboard_teacher():
         today_schedule=today_schedule,
         today=today
     )
-
 @app.route("/dashboard_student")
 def dashboard_student():
+
+    if "email" not in session:
+        return redirect(url_for("login"))
+
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+
+    # -----------------------------
+    # Get Logged-in Student
+    # -----------------------------
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM students
+        WHERE email=%s
+        """,
+        (session["email"],)
+    )
+
+    student = cursor.fetchone()
+
+
+    if not student:
+
+        cursor.close()
+        connection.close()
+
+        flash("Student not found!", "danger")
+
+        return redirect(url_for("login"))
+
+
+
+    # -----------------------------
+    # Total Subjects
+    # -----------------------------
+
+    cursor.execute(
+        """
+        SELECT COUNT(*) AS total
+        FROM subjects
+        """
+    )
+
+    result = cursor.fetchone()
+
+    total_subjects = result["total"] or 0
+
+
+
+    # -----------------------------
+    # Attendance Percentage
+    # -----------------------------
+
+    cursor.execute(
+        """
+        SELECT 
+            COUNT(*) AS total_days,
+            SUM(
+                CASE 
+                    WHEN status='Present' THEN 1 
+                    ELSE 0 
+                END
+            ) AS present_days
+
+        FROM attendance
+
+        WHERE student_email=%s
+        """,
+        (session["email"],)
+    )
+
+
+    attendance_data = cursor.fetchone()
+
+
+
+    if attendance_data["total_days"]:
+
+        attendance_percent = round(
+            (
+                attendance_data["present_days"]
+                /
+                attendance_data["total_days"]
+            ) * 100,
+            2
+        )
+
+    else:
+
+        attendance_percent = 0
+
+
+
+    # -----------------------------
+    # Pending Assignments
+    # -----------------------------
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM assignments
+        WHERE status!='Closed'
+        ORDER BY due_date ASC
+        """
+    )
+
+
+    assignments = cursor.fetchall()
+
+
+    pending = len(assignments)
+
+
+
+    # -----------------------------
+    # Today's Timetable
+    # -----------------------------
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM timetable
+
+        WHERE day = DAYNAME(CURDATE())
+
+        ORDER BY period
+        """
+    )
+
+
+    timetable = cursor.fetchall()
+
+
+
+    # -----------------------------
+    # Latest Notices
+    # -----------------------------
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM notices
+
+        ORDER BY notice_date DESC
+
+        LIMIT 5
+        """
+    )
+
+
+    notices = cursor.fetchall()
+
+
+
+    cursor.close()
+    connection.close()
+
+
+
+    return render_template(
+
+        "student/dashboard.html",
+
+        student=student,
+
+        total_subjects=total_subjects,
+
+        attendance_percent=attendance_percent,
+
+        pending=pending,
+
+        assignments=assignments,
+
+        timetable=timetable,
+
+        notices=notices
+
+    )
+
+@app.route("/assignments_student")
+def assignments_student():
+
+    if "email" not in session:
+        return redirect(url_for("login"))
+
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+
+    # Get logged in student
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM students
+        WHERE email=%s
+        """,
+        (session["email"],)
+    )
+
+    student = cursor.fetchone()
+
+
+    if not student:
+
+        cursor.close()
+        connection.close()
+
+        flash("Student not found!", "danger")
+
+        return redirect(url_for("login"))
+
+
+
+    # Get assignments
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM assignments
+        ORDER BY due_date ASC
+        """
+    )
+
+    assignments = cursor.fetchall()
+
+
+
+    cursor.close()
+    connection.close()
+
+
+
+    return render_template(
+        "student/assignments.html",
+        student=student,
+        assignments=assignments
+    )
+
+@app.route("/courses_student")
+def courses_student():
+
+    if "email" not in session:
+        return redirect(url_for("login"))
+
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+
+    # Get student details
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM students
+        WHERE email=%s
+        """,
+        (session["email"],)
+    )
+
+    student = cursor.fetchone()
+
+
+    if not student:
+        cursor.close()
+        connection.close()
+        flash("Student not found!", "danger")
+        return redirect(url_for("login"))
+
+
+
+    # Get all subjects
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM subjects
+        ORDER BY name ASC
+        """
+    )
+
+    subjects = cursor.fetchall()
+
+
+
+    # Statistics
+
+    total_courses = len(subjects)
+
+
+    total_credits = 0
+    weekly_periods = 0
+    active_courses = 0
+
+
+    for subject in subjects:
+
+        total_credits += subject["credits"] or 0
+
+        weekly_periods += subject["periods_per_week"] or 0
+
+
+        if subject["status"] == "Active":
+            active_courses += 1
+
+
+
+    cursor.close()
+    connection.close()
+
+
+
+    return render_template(
+        "student/courses.html",
+
+        student=student,
+
+        subjects=subjects,
+
+        total_courses=total_courses,
+
+        total_credits=total_credits,
+
+        weekly_periods=weekly_periods,
+
+        active_courses=active_courses
+    )
+
+@app.route("/attendance_student")
+def attendance_student():
 
     if "email" not in session:
         return redirect(url_for("login"))
@@ -533,101 +868,56 @@ def dashboard_student():
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
-    # Logged-in student
-    cursor.execute("""
-        SELECT *
-        FROM students
-        WHERE email=%s
-    """, (session["email"],))
+    # Get logged-in student
+    cursor.execute(
+        "SELECT * FROM students WHERE email=%s",
+        (session["email"],)
+    )
 
     student = cursor.fetchone()
 
     if not student:
-        cursor.close()
-        connection.close()
-        return "Student not found."
+        flash("Student not found")
+        return redirect(url_for("login"))
 
-    # Total Subjects
+    # Attendance records
     cursor.execute("""
-        SELECT COUNT(*) AS total
-        FROM subject_allocation
-        WHERE class_id=(
-            SELECT id
-            FROM classes
-            WHERE class_name=%s
-        )
-    """, (student["class_name"],))
+        SELECT *
+        FROM attendance
+        WHERE student_name=%s
+        ORDER BY attendance_date DESC
+    """, (student["name"],))
 
-    total_subjects = cursor.fetchone()["total"]
+    attendance = cursor.fetchall()
 
-    # Attendance Percentage
+    # Attendance statistics
     cursor.execute("""
         SELECT
-            COUNT(*) AS total_classes,
-            SUM(CASE WHEN status='Present' THEN 1 ELSE 0 END) AS present
+        COUNT(*) total,
+        SUM(CASE WHEN status='Present' THEN 1 ELSE 0 END) present
         FROM attendance
         WHERE student_name=%s
     """, (student["name"],))
 
-    attendance = cursor.fetchone()
+    stats = cursor.fetchone()
 
-    if attendance["total_classes"] == 0:
-        attendance_percent = 0
-    else:
-        attendance_percent = round(
-            attendance["present"] * 100 / attendance["total_classes"], 1
-        )
+    total = stats["total"] if stats["total"] else 0
+    present = stats["present"] if stats["present"] else 0
+    absent = total - present
 
-    # Pending Assignments
-    cursor.execute("""
-        SELECT COUNT(*) AS total
-        FROM assignments
-        WHERE class_name=%s
-        AND status='Pending'
-    """, (student["class_name"],))
-
-    pending = cursor.fetchone()["total"]
-
-    # Today's Timetable
-    import datetime
-
-    today = datetime.datetime.today().strftime("%A")
-
-    cursor.execute("""
-        SELECT *
-        FROM timetable
-        WHERE class_name=%s
-        AND day=%s
-        ORDER BY period
-    """,
-    (
-        student["class_name"],
-        today
-    ))
-
-    timetable = cursor.fetchall()
-
-    # Latest Notices
-    cursor.execute("""
-        SELECT *
-        FROM notices
-        ORDER BY id DESC
-        LIMIT 5
-    """)
-
-    notices = cursor.fetchall()
+    percentage = round((present/total)*100,2) if total else 0
 
     cursor.close()
     connection.close()
 
     return render_template(
-        "student/dashboard.html",
+        "student/attendance.html",
         student=student,
-        total_subjects=total_subjects,
-        attendance_percent=attendance_percent,
-        pending=pending,
-        timetable=timetable,
-        notices=notices
+        attendance=attendance,
+        total=total,
+        present=present,
+        absent=absent,
+        percentage=percentage
     )
 
 @app.route("/student_add_dashboard_item", methods=["POST"])
@@ -2882,68 +3172,6 @@ def clear_cache():
 
     return redirect(url_for("settings_admin"))
 
-@app.route("/courses_student")
-def courses_student():
-
-    if "email" not in session:
-        return redirect(url_for("login"))
-
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-
-    # Logged-in student
-    cursor.execute("""
-        SELECT *
-        FROM students
-        WHERE email=%s
-    """, (session["email"],))
-
-    student = cursor.fetchone()
-
-    if not student:
-        cursor.close()
-        connection.close()
-        return "Student not found."
-
-    # Get class id
-    cursor.execute("""
-        SELECT id
-        FROM classes
-        WHERE class_name=%s
-    """, (student["class_name"],))
-
-    cls = cursor.fetchone()
-
-    # Subjects allocated for the student's class
-    cursor.execute("""
-        SELECT
-            s.id,
-            s.name,
-            s.code,
-            s.credits,
-            s.students_enrolled,
-            t.name AS teacher_name
-        FROM subject_allocation sa
-        JOIN subjects s
-            ON sa.subject_id = s.id
-        JOIN teachers t
-            ON sa.teacher_id = t.id
-        WHERE sa.class_id=%s
-        ORDER BY s.name
-    """, (cls["id"],))
-
-    subjects = cursor.fetchall()
-
-    cursor.close()
-    connection.close()
-
-    return render_template(
-        "student/courses.html",
-        student=student,
-        subjects=subjects
-    )
-
-
 @app.route("/add_assignment", methods=["GET", "POST"])
 def add_assignment():
 
@@ -3053,103 +3281,74 @@ def student_delete_submission(id):
     connection.close()
     return redirect(url_for("assignments_student"))
 
-@app.route("/grades_student")
-def grades_student():
-
-    if "email" not in session:
-        return redirect(url_for("login"))
-
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-
-    # Logged-in student
-    cursor.execute("""
-        SELECT *
-        FROM students
-        WHERE email=%s
-    """, (session["email"],))
-
-    student = cursor.fetchone()
-
-    # Student grades
-    cursor.execute("""
-        SELECT *
-        FROM grades
-        WHERE student_email=%s
-        ORDER BY course
-    """, (session["email"],))
-
-    grades = cursor.fetchall()
-
-    # Calculate SGPA
-    total_points = 0
-    total_credits = 0
-
-    for row in grades:
-        total_points += row["points"] * row["credits"]
-        total_credits += row["credits"]
-
-    sgpa = round(total_points / total_credits, 2) if total_credits > 0 else 0
-
-    cursor.close()
-    connection.close()
-
-    return render_template(
-        "student/grades.html",
-        student=student,
-        grades=grades,
-        sgpa=sgpa
-    )
-
 @app.route("/timetable_student")
 def timetable_student():
 
     if "email" not in session:
         return redirect(url_for("login"))
 
+
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
-    # Logged-in student
-    cursor.execute("""
+
+    # Get student
+
+    cursor.execute(
+        """
         SELECT *
         FROM students
         WHERE email=%s
-    """, (session["email"],))
+        """,
+        (session["email"],)
+    )
 
     student = cursor.fetchone()
 
-    if student:
 
-        cursor.execute("""
-            SELECT *
-            FROM timetable
-            WHERE class_name=%s
-            ORDER BY
-            FIELD(day,'Monday','Tuesday','Wednesday','Thursday','Friday'),
-            period
-        """,(student["class_name"],))
 
-        timetable = cursor.fetchall()
+    # Get timetable data
 
-    else:
-        timetable=[]
+    cursor.execute(
+        """
+        SELECT 
+            day,
+            period,
+            subject,
+            teacher,
+            room
+        FROM timetable
+        ORDER BY period
+        """
+    )
+
+
+    rows = cursor.fetchall()
+
+
+
+    # Convert list into dictionary
+
+    timetable = {}
+
+
+    for row in rows:
+
+        timetable[
+            (row["day"], row["period"])
+        ] = row
+
+
 
     cursor.close()
     connection.close()
 
-    timetable_dict={}
 
-    for row in timetable:
-
-        key=(row["day"],row["period"])
-
-        timetable_dict[key]=row
 
     return render_template(
         "student/timetable.html",
         student=student,
-        timetable=timetable_dict
+        timetable=timetable
     )
 
 @app.route("/notices_student")
@@ -3158,33 +3357,62 @@ def notices_student():
     if "email" not in session:
         return redirect(url_for("login"))
 
+
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
+
+    # Get logged-in student
+
     cursor.execute(
-        "SELECT * FROM students WHERE email=%s",
+        """
+        SELECT *
+        FROM students
+        WHERE email=%s
+        """,
         (session["email"],)
     )
 
     student = cursor.fetchone()
 
-    cursor.execute("""
-        SELECT *
+
+    if not student:
+        cursor.close()
+        connection.close()
+        flash("Student not found!", "danger")
+        return redirect(url_for("login"))
+
+
+
+    # Fetch notices
+
+    cursor.execute(
+        """
+        SELECT 
+            id,
+            title,
+            description,
+            notice_date,
+            posted_by
         FROM notices
         ORDER BY notice_date DESC
-    """)
+        """
+    )
 
     notices = cursor.fetchall()
 
+
+
     cursor.close()
     connection.close()
+
+
 
     return render_template(
         "student/notices.html",
         student=student,
         notices=notices
     )
-
 @app.route("/settings_student", methods=["GET", "POST"])
 def settings_student():
 

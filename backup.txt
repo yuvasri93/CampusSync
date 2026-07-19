@@ -1,0 +1,8 @@
+CampusSync Backup
+
+{'id': 542, 'name': 'Aarav Patel', 'email': 'aarav.patel@campus.edu', 'enrollment_id': 'CS2024001', 'class_name': 'Class 12 A', 'status': 'Active'}
+{'id': 543, 'name': 'Zara Khan', 'email': 'zara.khan@campus.edu', 'enrollment_id': 'CS2024002', 'class_name': 'Class 12 B', 'status': 'Active'}
+{'id': 544, 'name': 'Ravi Singh', 'email': 'ravi.singh@campus.edu', 'enrollment_id': 'CS2024003', 'class_name': 'Class 12 A', 'status': 'Active'}
+{'id': 545, 'name': 'Priya Sharma', 'email': 'priya.sharma@campus.edu', 'enrollment_id': 'CS2024004', 'class_name': 'Class 11 C', 'status': 'Inactive'}
+{'id': 546, 'name': 'Neha Verma', 'email': 'neha.verma@campus.edu', 'enrollment_id': 'CS2024005', 'class_name': 'Class 12 B', 'status': 'Active'}
+{'id': 967, 'name': 'Yuvasri A', 'email': 'yuvasrianandh93@gmail.com', 'enrollment_id': '922525104189', 'class_name': '2', 'status': 'Active'}
